@@ -1,0 +1,83 @@
+# PUPPET - Edits to this file will be overwriten
+<%- @ipv6 = false -%>
+auto lo
+iface lo inet loopback
+
+<%- @interfaces.each_pair do |iface, config| -%>
+auto <%= iface %>
+  <%- if config['addr4'] then -%> 
+iface <%= iface %> inet static
+  address <%= config['addr4'] %>
+    <%- if config['nameservers'] -%>
+  #This is ignored if unbound is installed
+  dns-nameservers <%= config['nameservers'].join(" ") %>
+    <%- end -%>
+  dns-search <%= @domain %>
+    <%- if config['gw4'] -%>
+  gateway <%= config['gw4'] %>
+#:ipv4_capable=true
+#:ipv4_primary_interface=<%= iface %>
+      <%- end -%>
+    <%- if config['vlan_raw_device'] -%>
+  vlan-raw-device <%= config['vlan_raw_device'] %>
+    <%- end -%>
+  <%- end -%>
+  <%- if config['addr6'] then 
+    @ipv6 = true -%>
+iface lo inet6 loopback
+iface <%= iface %> inet6 static
+  address <%= config['addr6'] %>
+    <%- if config['nameservers6'] -%> 
+  #This is ignored if unbound is installed
+  dns-nameservers <%= config['nameservers6'].join(" ") %>
+    <%- end -%>
+    <%- if config['gw6'] -%>
+  gateway <%= config['gw6'] %>
+#:ipv6_capable=true
+#:ipv6_primary_interface=<%= iface %>
+    <%- end -%>
+    <%- if config['vlan_raw_device'] -%>
+  vlan-raw-device <%= config['vlan_raw_device'] %>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+<%- @iface_count = 0 -%>
+<%- if @dummy4.any? || @dummy6.any? -%>
+  <%- @dummy4.each_pair do |name, dummy| -%>
+    <%- if dummy.is_a?(String) then
+      dummy = Array(dummy)
+    end -%>
+    <%- dummy.each do |addr| -%>
+      <%- if @iface_count == 0 -%>
+#<%= name %>:
+auto dummy0
+iface dummy0 inet static
+  address <%= addr %>/32
+      <%- else -%>
+#<%= name %>:
+auto dummy0:<%= @iface_count - 1 %>
+iface dummy0:<%= @iface_count - 1 %> inet static
+  address <%= addr %>/32
+      <%- end -%> 
+      <%- @iface_count += 1 -%>
+    <%- end -%>
+  <%- end -%>
+  <%- if @ipv6 then -%>
+iface dummy0 inet6 static
+    <%- @dummy6.each_with_index do |(name, dummy), d_index| -%>
+      <%- if dummy.is_a?(String) then
+        dummy = Array(dummy)
+      end -%>
+      <%- dummy.each_with_index do |addr, a_index| -%>
+        <%- if d_index == 0 && a_index == 0-%>
+  #<%= name %>:
+  address <%= addr %>/128
+        <%- else -%>
+  #<%= name %>:
+  post-up ip -f inet6 addr add <%= addr %>/128 dev dummy0
+  pre-down ip -f inet6 addr del <%= addr %>/128 dev dummy0
+        <%- end -%>
+      <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>

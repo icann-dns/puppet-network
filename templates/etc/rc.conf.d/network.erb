@@ -1,0 +1,49 @@
+# Added by Puppet
+netwait_enable="YES"
+<%- @ipv6 = false -%>
+<%- @aliases = Array.new -%>
+hostname="<%= @fqdn %>"
+<%- @interfaces.each_pair do |iface, config| -%>
+  <%- if config['addr4'] then -%>
+ifconfig_<%= iface %>="inet <%= config['addr4'] %>"
+  <%- end -%>
+  <%- if config['gw4'] -%>
+#:ipv4_capable=true
+#:ipv4_primary_interface=<%= iface %>
+defaultrouter="<%= config['gw4'] %>"
+netwait_if=<%= iface %>
+netwait_ip=<%= config['gw4'] %>
+  <%- end -%>
+  <%- if config['addr6'] then 
+    @ipv6 = true -%>
+ipv6_privacy="NO"
+ifconfig_<%= iface %>_ipv6="inet6 <%= config['addr6'] %>"
+  <%- end -%>
+  <%- if config['gw6'] -%>
+#:ipv6_capable=true
+#:ipv6_primary_interface=<%= iface %>
+ipv6_defaultrouter="<%= config['gw6'] %>"
+  <%- end -%>
+<%- end -%>
+<%- @dummy4.each_pair do |name, dummy|
+  if dummy.is_a?(String) then
+    @aliases.push("inet #{dummy}/32")
+  else 
+    dummy.each do |addr|
+      @aliases.push("inet #{addr}/32")
+    end 
+  end 
+end 
+if @ipv6 
+  @dummy6.each_pair do |name, dummy|
+    if dummy.is_a?(String) then
+      @aliases.push("inet6 #{dummy}/128")
+    else 
+      dummy.each do |addr|
+        @aliases.push("inet6 #{addr}/128")
+      end 
+    end 
+  end 
+end -%>
+ifconfig_lo0_aliases="\
+        <%= @aliases.join(" \\\n\t") %>"
