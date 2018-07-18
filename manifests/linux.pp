@@ -1,5 +1,5 @@
-# == Class: network
-#
+# @summary
+#   Used to configure networking for linux hosts
 class network::linux {
   include ::network
 
@@ -8,7 +8,7 @@ class network::linux {
   $dummy6      = $::network::dummy6
   $sysctl      = $::network::sysctl
   $prefer_ipv4 = $::network::prefer_ipv4
-
+  assert_private()
   create_resources(sysctl, $sysctl)
   ensure_packages(['vlan'])
   file {

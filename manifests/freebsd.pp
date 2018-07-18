@@ -1,5 +1,5 @@
-# == Class: network
-#
+# @summary
+#   Used to configure networking for freebsd hosts
 class network::freebsd {
   include ::network
 
@@ -8,6 +8,7 @@ class network::freebsd {
   $dummy6      = $::network::dummy6
   $sysctl      = $::network::sysctl
 
+  assert_private()
   # create_resources(sysctl, $sysctl)
 
   file { '/usr/local/bin/network_status.sh':

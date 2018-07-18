@@ -5,14 +5,12 @@
 # rubocop:disable Style/DoubleNegation
 module Puppet::Parser::Functions
   newfunction(:get_addresses, type: :rvalue, doc: <<-EOS
-returns and array of ip addresses from hiera and netwiork config.  incluiding ipv6
-addresses if the server is ipv6 capable
-
-get_addresses()      => #returns an array contianing the primary ipv4 and ipv6 address
-get_addresses('nsd') => #returns an array contianing the primary ipv4 and ipv6 address and
-                        #the address configuered in network::dummy{4,6}['nsd'']
-
-get_addresses('nsd', false) => #the address configuered in network::dummy{4,6}['nsd'']
+    # @param send_primary return the primary interface in the response
+    # @param dummy_name if present returne entries matching the dummy name
+    # @param send_ipv4 send IPv4 addresses
+    # @param send_ipv6 send IPv6 addresses
+    # @param join if present send the result as a joined list using this as a join string
+    # @return Array returns an array of IP addresses unless join is present when we return a joined string
     EOS
              ) do |args|
     send_primary = true

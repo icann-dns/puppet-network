@@ -28,7 +28,7 @@ describe 'network::freebsd' do
       },
       dummy4 => {
         'dns' => '192.0.2.53',
-        'http' => ['192.0.2.80', '192.0.2.443'],
+        'http' => ['192.0.2.80', '192.0.2.43'],
       },
       dummy6 => {
         'dns' => '2001:db8::53',
@@ -80,7 +80,7 @@ describe 'network::freebsd' do
           ).with_content(
             %r{#{ping} 127.0.0.1 192.0.2.80 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} 127.0.0.1 192.0.2.443 1>/dev/null 2>&1 || exit 1},
+            %r{#{ping} 127.0.0.1 192.0.2.43 1>/dev/null 2>&1 || exit 1},
           ).with_content(
             %r{#{ping} #{loopback} 2001:2b8:53 1>/dev/null 2>&1 || exit 1},
           ).with_content(
@@ -115,7 +115,7 @@ describe 'network::freebsd' do
             ifconfig_lo0_aliases="\\
             \s+inet\s192.0.2.53/32\s\\
             \s+inet\s192.0.2.80/32\s\\
-            \s+inet\s192.0.2.443/32\s\\
+            \s+inet\s192.0.2.43/32\s\\
             \s+inet6\s2001:db8::53/128\s\\
             \s+inet6\s2001:db8::80/128\s\\
             \s+inet6\s2001:db8::443/128"

@@ -15,7 +15,7 @@ describe 'network::linux' do
           'addr4' => '192.0.2.2/24',
           'gw4' => '192.0.2.1',
           'addr6' => '2001:db8::2/64',
-          'gw6' => '2001:db8::1/64',
+          'gw6' => '2001:db8::1',
           'nameservers' => ['8.8.8.8'],
           'nameservers6' => ['2001:4860:4860::8888'],
         },
@@ -26,7 +26,7 @@ describe 'network::linux' do
       },
       dummy4 => {
         'dns' => '192.0.2.53',
-        'http' => ['192.0.2.80', '192.0.2.443'],
+        'http' => ['192.0.2.80', '192.0.2.43'],
       },
       dummy6 => {
         'dns' => '2001:db8::53',
@@ -109,7 +109,7 @@ describe 'network::linux' do
           ).with_content(
             %r{#{ping} 127.0.0.1 192.0.2.80 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} 127.0.0.1 192.0.2.443 1>/dev/null 2>&1 || exit 1},
+            %r{#{ping} 127.0.0.1 192.0.2.43 1>/dev/null 2>&1 || exit 1},
           ).with_content(
             %r{#{ping} #{loopback} 2001:2b8:53 1>/dev/null 2>&1 || exit 1},
           ).with_content(
@@ -175,7 +175,7 @@ describe 'network::linux' do
           ).with_content(
             %r{
             iface\sdummy0:1\sinet\sstatic
-            \s+address\s192.0.2.443/32
+            \s+address\s192.0.2.43/32
             }x,
           ).with_content(
             %r{

@@ -1,14 +1,62 @@
-# == Class: network
+# @summary
+#   Used to configure networking for linux and freebsd hosts
+# @example 
+#   class { 'network':
+#     interfaces           => {
+#       'eth0'             => {
+#         'addr4'          => '192.0.2.42',
+#         'addr6'          => '2001:db8::42',
+#         'gw4'            => '192.0.2.1',
+#         'gw6'            => '2001:db8::1',
+#         'nameservers'    => ['8.8.8.8'],
+#         'nameservers6'   => ['2001:4860:4860::8888'],
+#       },
+#     },
+#     dummy4                => {
+#       'dns'               => '192.0.2.53',
+#       'http'              => ['192.0.2.80', 192.0.2.443'],
+#     },
+#     dummy6                => {
+#       'dns'               => '192.0.2.53',
+#       'http'              => ['192.0.2.80', 192.0.2.443'],
+#     },
+#     sysctl                 => {
+#       'net.core.somaxconn' => { 'value' =>'1024' },
+#     },
+#     additional_hosts       => {
+#       'foobar.example.com' => {
+#         'ip'               => '192.0.2.254',
+#         'host_aliases'     => ['foobar'],
+#       },
+#     },
+#     prefer_ipv4            => false,
+#     purge_hosts            => false,
+#   }
+#
+# @param interfaces
+#   a hash of interfaces to create
+# @param dummy4
+#   a hash of ipv4 dummy interfaces to create
+# @param dummy6
+#   a hash of ipv6 dummy interfaces to create
+# @param sysctl
+#   a hash of sysctl types to pass to thias/sysctl
+# @param additional_hosts
+#   a hash of additional `host` type entries to create
+# @param prefer_ipv4 
+#   if true then the system will prefer IPv4 connections over IPv6
+# @param purge_hosts
+#   if true purge any `host` entries not managed by puppet
 #
 class network (
-  Hash             $interfaces       = {},
-  Optional[Hash]   $dummy4           = {},
-  Optional[Hash]   $dummy6           = {},
-  Optional[Hash]   $sysctl           = {},
-  Optional[Hash]   $additional_hosts = {},
-  Optional[String] $primary          = undef,
-  Boolean          $prefer_ipv4      = true,
-  Boolean          $purge_hosts      = true,
+  Hash[String[1],Network::Interface]         $interfaces       = {},
+  Optional[Hash[String[1], Network::Dummy4]] $dummy4           = {},
+  Optional[Hash[String[1], Network::Dummy6]] $dummy6           = {},
+  Optional[Hash]                             $sysctl           = {},
+  Optional[Hash]                             $additional_hosts = {},
+  Optional[String]                           $primary          = undef,
+  Boolean                                    $prefer_ipv4      = true,
+  Boolean                                    $purge_hosts      = true,
 ) {
   resources {'host':
     purge => $purge_hosts,
