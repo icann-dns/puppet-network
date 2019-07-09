@@ -1,9 +1,9 @@
 #!/bin/sh
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 <%- 
-@ping = 'ping -q -W 1 -c 1 -I'
-@ping6 = 'ping6 -q -W 1 -c 1 -I'
-@loopback = 'lo'
+@ping = 'ping -q -W 1 -c 1'
+@ping6 = 'ping6 -q -W 1 -c 1'
+@loopback = '-I lo'
 if @kernel == 'FreeBSD' then
   @ping = 'ping -q -W 1 -c 1 -S'
   @ping6 = 'ping6 -q -i 1 -c 1 -I'
@@ -13,17 +13,18 @@ end %>
 <%- @interfaces.each_pair do |int, config| -%>
   <%- if config.fetch('addr4', false) -%>
 #Test <%= int %> IPv4
-<%= @ping %> 127.0.0.1  <%= config['addr4'].split('/')[0] %> 1>/dev/null 2>&1  || exit 1
+<%= @ping %> 127.0.0.1 <%= config['addr4'].split('/')[0] %> 1>/dev/null 2>&1 || exit 1
     <%- if config.fetch('gw4', false) -%>
-<%= @ping %> <%= config['addr4'].split('/')[0] %> <%= config['gw4'] %> 1>/dev/null 2>&1  || exit 1
+#<%= @ping %> <%= config['addr4'].split('/')[0] %> <%= config['gw4'] %> 1>/dev/null 2>&1 || exit 1
     <%- end -%>
   <%- end -%>
   <%- if config.fetch('addr6', false) -%>
     <%- @ipv6 = true -%>
 #Test <%= int %> IPv6
-<%= @ping6 %> <%= @loopback %>  <%= config['addr6'].split('/')[0] %> 1>/dev/null 2>&1  || exit 1
+#<%= @ping6 %> <%= @loopback %> <%= config['addr6'].split('/')[0] %> 1>/dev/null 2>&1 || exit 1
+<%= @ping6 %> <%= config['addr6'].split('/')[0] %> 1>/dev/null 2>&1 || exit 1
     <%- if config.fetch('gw6', false) -%>
-<%= @ping6 %> <%= int %> <%= config['gw6'] %> 1>/dev/null 2>&1  || exit 1
+#<%= @ping6 %> <%= int %> <%= config['gw6'] %> 1>/dev/null 2>&1 || exit 1
     <%- end -%>
   <%- end -%>
 <%- end -%>
@@ -33,7 +34,7 @@ end %>
     config = [config]
   end
   config.each do |addr| -%>
-<%= @ping %> 127.0.0.1  <%= addr %> 1>/dev/null 2>&1  || exit 1
+<%= @ping %> -I 127.0.0.1 <%= addr %> 1>/dev/null 2>&1 || exit 1
   <%- end -%>
 <%- end -%>
 <%- if @ipv6 -%>
@@ -43,7 +44,8 @@ end %>
     config = [config]
   end
   config.each do |addr| -%>
-<%= @ping6 %> <%= @loopback %>  <%= addr %> 1>/dev/null 2>&1  || exit 1
+#<%= @ping6 %> <%= @loopback %> <%= addr %> 1>/dev/null 2>&1 || exit 1
+<%= @ping6 %> <%= addr %> 1>/dev/null 2>&1 || exit 1
     <%- end -%>
   <%- end -%>
 <%- end -%>
