@@ -13,7 +13,7 @@ end %>
 <%- @interfaces.each_pair do |int, config| -%>
   <%- if config.fetch('addr4', false) -%>
 #Test <%= int %> IPv4
-<%= @ping %> 127.0.0.1 <%= config['addr4'].split('/')[0] %> 1>/dev/null 2>&1 || exit 1
+<%= @ping %> -I 127.0.0.1 <%= config['addr4'].split('/')[0] %> 1>/dev/null 2>&1 || exit 1
     <%- if config.fetch('gw4', false) -%>
 #<%= @ping %> <%= config['addr4'].split('/')[0] %> <%= config['gw4'] %> 1>/dev/null 2>&1 || exit 1
     <%- end -%>
