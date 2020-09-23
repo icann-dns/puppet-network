@@ -11,6 +11,17 @@ class network::linux {
   assert_private()
   create_resources(sysctl, $sysctl)
   ensure_packages(['vlan'])
+
+  if $::lsbdistcodename == 'bionic' {
+    package { [ 'ifupdown', 'resolvconf' ]:
+      ensure => present,
+      before => File['/etc/network/interfaces'],
+    }
+    service { [ 'systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online' ]:
+      enable => mask;
+    }
+  }
+
   file {
     '/etc/hostname':
       content => $::fqdn;
