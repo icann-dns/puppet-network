@@ -17,8 +17,10 @@ class network::linux {
       ensure => present,
       before => File['/etc/network/interfaces'],
     }
-    service { ['systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online']:
-      enable => mask;
+    if $facts['systemd'] {
+      service { ['systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online']:
+        enable => mask;
+      }
     }
   }
 
