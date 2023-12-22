@@ -1,23 +1,23 @@
 # @summary
 #   Used to configure networking for freebsd hosts
 class network::freebsd {
-  include ::network
+  include network
 
-  $interfaces  = $::network::interfaces
-  $dummy4      = $::network::dummy4
-  $dummy6      = $::network::dummy6
-  $sysctl      = $::network::sysctl
+  $interfaces  = $network::interfaces
+  $dummy4      = $network::dummy4
+  $dummy6      = $network::dummy6
+  $sysctl      = $network::sysctl
 
   assert_private()
   # create_resources(sysctl, $sysctl)
 
   file { '/usr/local/bin/network_status.sh':
-    ensure  => present,
+    ensure  => file,
     mode    => '0755',
     content => template('network/usr/local/bin/network_status.sh.erb'),
   }
   file { '/etc/rc.conf.d/network':
-    ensure  => present,
+    ensure  => file,
     content => template('network/etc/rc.conf.d/network.erb'),
   }
 

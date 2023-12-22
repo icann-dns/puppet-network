@@ -2,29 +2,6 @@ require 'spec_helper'
 
 describe 'network' do
   let(:node) { 'network.example.com' }
-  let(:params) do
-    {
-      interfaces: {
-        'eth0' => {
-          'addr4' => '192.0.2.2/24',
-          'gw4' => '192.0.2.1',
-          'addr6' => '2001:db8::2/64',
-          'gw6' => '2001:db8::2',
-        },
-        'eth1' => {
-          'addr4' => '192.0.2.3/24',
-          'addr6' => '2001:db8::3/64',
-        },
-      },
-      # dummy4: {},
-      # dummy6: {},
-      # sysctl: {},
-      # additional_hosts: {},
-      # primary: :undef,
-      # prefer_ipv4: true,
-      # purge_hosts: true,
-    }
-  end
 
   # Puppet::Util::Log.level = :debug
   # Puppet::Util::Log.newdestination(:console)
@@ -33,6 +10,28 @@ describe 'network' do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
+      case facts[:kernel]
+      when 'FreeBSD'
+        let(:primary) { 'em0' }
+      else
+        let(:primary) { 'enp0s3' }
+      end
+      let(:params) do
+        {
+          interfaces: {
+            primary => {
+              'addr4' => '192.0.2.2/24',
+              'gw4' => '192.0.2.1',
+              'addr6' => '2001:db8::2/64',
+              'gw6' => '2001:db8::2',
+            },
+            'eth1' => {
+              'addr4' => '192.0.2.3/24',
+              'addr6' => '2001:db8::3/64',
+            },
+          },
+        }
+      end
 
       describe 'check default config' do
         it { is_expected.to compile.with_all_deps }

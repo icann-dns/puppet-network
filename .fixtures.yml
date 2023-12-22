@@ -5,3 +5,4 @@ fixtures:
   forge_modules:
      stdlib: "puppetlabs/stdlib"
      sysctl: "thias/sysctl"
+     host_core: "puppetlabs/host_core"

@@ -11,7 +11,7 @@ describe 'network::linux' do
     <<-NETWORK
     class {'network':
       interfaces => {
-        'eth0' => {
+        'enp0s3' => {
           'addr4' => '192.0.2.2/24',
           'gw4' => '192.0.2.1',
           'addr6' => '2001:db8::2/64',
@@ -68,29 +68,29 @@ describe 'network::linux' do
         it do
           is_expected.to contain_file(
             '/etc/sysctl.d/net.ipv6.conf.interface.accept_ra.conf',
-          ).with_ensure('present').with_content(
-            %r{net.ipv6.conf.eth0.accept_ra = 0},
+          ).with_ensure('file').with_content(
+            %r{net.ipv6.conf.enp0s3.accept_ra = 0},
           ).with_content(
             %r{net.ipv6.conf.eth1.accept_ra = 0},
           )
         end
         it do
           is_expected.to contain_file('/etc/gai.conf').with_ensure(
-            'present',
+            'file',
           ).with_content(
             %r{precedence ::ffff:0:0/96 100},
           )
         end
         it do
           is_expected.to contain_file('/etc/init.d/networking').with(
-            ensure: 'present',
+            ensure: 'file',
             mode: '0755',
             source: 'puppet:///modules/network/etc/init.d/networking',
           )
         end
         it do
           is_expected.to contain_file('/usr/local/bin/network_status.sh').with(
-            ensure: 'present',
+            ensure: 'file',
             mode: '0755',
           ).with_content(
             %r{#{ping} 127.0.0.1 192.0.2.2 1>/dev/null 2>&1 || exit 1},
@@ -103,7 +103,7 @@ describe 'network::linux' do
           ).with_content(
             %r{#{ping} #{loopback} 2001:2b8:3 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} eth0 2001:2b8:1 1>/dev/null 2>&1 || exit 1},
+            %r{#{ping} enp0s3 2001:2b8:1 1>/dev/null 2>&1 || exit 1},
           ).with_content(
             %r{#{ping} 127.0.0.1 192.0.2.53 1>/dev/null 2>&1 || exit 1},
           ).with_content(
@@ -125,18 +125,18 @@ describe 'network::linux' do
         end
         it do
           is_expected.to contain_file('/etc/network/interfaces').with(
-            ensure: 'present',
+            ensure: 'file',
             require: [
               'File[/usr/local/bin/network_status.sh]',
               'File[/etc/init.d/networking]',
             ],
           ).with_content(
-            %r{auto eth0},
+            %r{auto enp0s3},
           ).with_content(
             %r{auto eth1},
           ).with_content(
             %r{
-            iface\seth0\sinet\sstatic
+            iface\senp0s3\sinet\sstatic
             \s+address\s192.0.2.2/24
             \s+\#This\sis\signored\sif\sunbound\sis\sinstalled
             \s+dns-nameservers\s8.8.8.8
@@ -151,7 +151,7 @@ describe 'network::linux' do
             }x,
           ).with_content(
             %r{
-            iface\seth0\sinet6\sstatic
+            iface\senp0s3\sinet6\sstatic
             \s+address\s2001:db8::2/64
             \s+\#This\sis\signored\sif\sunbound\sis\sinstalled
             \s+dns-nameservers\s2001:4860:4860::8888
@@ -218,13 +218,13 @@ describe 'network::linux' do
             <<-NETWORK
             class {'network':
               interfaces => {
-                'eth0' => {
+                'enp0s3' => {
                   'addr4' => '192.0.2.2/24',
                   'gw4' => '192.0.2.1',
                 },
-                'eth0.42' => {
+                'enp0s3.42' => {
                   'addr4' => '192.0.2.42/24',
-                  'vlan_raw_device' => 'eth0',
+                  'vlan_raw_device' => 'enp0s3',
                 }
               },
               sysctl => {
@@ -237,7 +237,7 @@ describe 'network::linux' do
 
           it do
             is_expected.to contain_file('/etc/gai.conf').with_ensure(
-              'present',
+              'file',
             ).without_content(
               %r{precedence ::ffff:0:0/96 100},
             )
@@ -245,17 +245,17 @@ describe 'network::linux' do
           it do
             is_expected.to contain_file('/etc/network/interfaces').with_content(
               %r{
-              iface\seth0\sinet\sstatic
+              iface\senp0s3\sinet\sstatic
               \s+address\s192.0.2.2/24
               \s+dns-search\sexample.com
               \s+gateway\s192.0.2.1
               }x,
             ).with_content(
               %r{
-              iface\seth0.42\sinet\sstatic
+              iface\senp0s3.42\sinet\sstatic
               \s+address\s192.0.2.42/24
               \s+dns-search\sexample.com
-              \s+vlan-raw-device\seth0
+              \s+vlan-raw-device\senp0s3
               }x,
             )
           end
