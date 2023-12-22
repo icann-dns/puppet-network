@@ -1,6 +1,6 @@
 # @summary
 #   Used to configure networking for linux and freebsd hosts
-# @example 
+# @example
 #   class { 'network':
 #     interfaces           => {
 #       'eth0'             => {
@@ -47,34 +47,34 @@
 #   if true then the system will prefer IPv4 connections over IPv6
 # @param purge_hosts
 #   if true purge any `host` entries not managed by puppet
-#
+# @param primary the name of the primary interface
 class network (
-  Hash[String[1],Network::Interface]         $interfaces       = {},
-  Optional[Hash[String[1], Network::Dummy4]] $dummy4           = {},
-  Optional[Hash[String[1], Network::Dummy6]] $dummy6           = {},
-  Optional[Hash]                             $sysctl           = {},
-  Optional[Hash]                             $additional_hosts = {},
-  Optional[String]                           $primary          = undef,
-  Boolean                                    $prefer_ipv4      = true,
-  Boolean                                    $purge_hosts      = true,
+  Boolean                            $prefer_ipv4      = true,
+  Boolean                            $purge_hosts      = true,
+  Hash[String[1],Network::Interface] $interfaces       = {},
+  Hash[String[1], Network::Dummy4]   $dummy4           = {},
+  Hash[String[1], Network::Dummy6]   $dummy6           = {},
+  Hash                               $sysctl           = {},
+  Hash                               $additional_hosts = {},
+  Optional[String]                   $primary          = undef,
 ) {
-  resources {'host':
+  resources { 'host':
     purge => $purge_hosts,
   }
   $_primary = $primary ? {
-    undef   => $::networking['primary'],
+    undef   => $facts['networking']['primary'],
     default => $primary,
   }
   $host_entries = {
-    'localhost'       => { 'ip' => '127.0.0.1', 'host_aliases' => []},
+    'localhost'       => { 'ip' => '127.0.0.1', 'host_aliases' => [] },
     'ip6-localhost'   => {
       'ip'           => '::1',
       'host_aliases' => ['localhost', 'ip6-loopback'],
     },
-    'ip6-localnet'    => { 'ip' => 'fe00::0'},
-    'ip6-mcastprefix' => { 'ip' => 'ff00::0'},
-    'ip6-allnodes'    => { 'ip' => 'ff02::1'},
-    'ip6-allrouters'  => { 'ip' => 'ff02::2'},
+    'ip6-localnet'    => { 'ip' => 'fe00::0' },
+    'ip6-mcastprefix' => { 'ip' => 'ff00::0' },
+    'ip6-allnodes'    => { 'ip' => 'ff02::1' },
+    'ip6-allrouters'  => { 'ip' => 'ff02::2' },
   }
   create_resources(host, $host_entries)
   if $additional_hosts {
@@ -84,19 +84,19 @@ class network (
   if $_primary {
     $primary_interface = $interfaces[$_primary]
     if $primary_interface['addr4'] {
-      host{$::networking['fqdn']:
+      host { $facts['networking']['fqdn']:
         ip           => $primary_interface['addr4'].split('/')[0],
-        host_aliases => [$::networking['hostname']],
+        host_aliases => [$facts['networking']['hostname']],
       }
     }
     if $primary_interface['addr6'] {
-      host{$::networking['hostname']:
+      host { $facts['networking']['hostname']:
         ip           => $primary_interface['addr6'].split('/')[0],
-        host_aliases => [$::networking['fqdn']],
+        host_aliases => [$facts['networking']['fqdn']],
       }
     }
   }
-  case $::kernel {
+  case $facts['kernel'] {
     'Linux': {
       include network::linux
     }
@@ -104,8 +104,7 @@ class network (
       include network::freebsd
     }
     default: {
-      warning("${::kernel} not supported")
+      warning("${facts['kernel']} not supported")
     }
   }
-
 }

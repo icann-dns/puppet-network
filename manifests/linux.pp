@@ -1,57 +1,57 @@
 # @summary
 #   Used to configure networking for linux hosts
 class network::linux {
-  include ::network
+  include network
 
-  $interfaces  = $::network::interfaces
-  $dummy4      = $::network::dummy4
-  $dummy6      = $::network::dummy6
-  $sysctl      = $::network::sysctl
-  $prefer_ipv4 = $::network::prefer_ipv4
+  $interfaces  = $network::interfaces
+  $dummy4      = $network::dummy4
+  $dummy6      = $network::dummy6
+  $sysctl      = $network::sysctl
+  $prefer_ipv4 = $network::prefer_ipv4
   assert_private()
   create_resources(sysctl, $sysctl)
   ensure_packages(['vlan'])
 
-  if $::lsbdistcodename == 'bionic' {
-    package { [ 'ifupdown', 'resolvconf' ]:
+  if $facts['os']['distro']['codename'] == 'bionic' {
+    package { ['ifupdown', 'resolvconf']:
       ensure => present,
       before => File['/etc/network/interfaces'],
     }
-    service { [ 'systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online' ]:
+    service { ['systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online']:
       enable => mask;
     }
   }
 
   file {
     '/etc/hostname':
-      content => $::fqdn;
+      content => $facts['networking']['fqdn'];
     '/etc/sysctl.d/net.ipv6.conf.interface.accept_ra.conf':
-      ensure  => present,
+      ensure  => file,
       content => template(
         'network/etc/sysctl.d/net.ipv6.conf.interface.accept_ra.conf.erb'
       );
     '/etc/gai.conf':
-      ensure  => present,
+      ensure  => file,
       content => template('network/etc/gai.conf.erb');
     '/etc/init.d/networking':
-      ensure => present,
+      ensure => file,
       mode   => '0755',
       source => 'puppet:///modules/network/etc/init.d/networking';
     '/usr/local/bin/network_status.sh':
-      ensure  => present,
+      ensure  => file,
       mode    => '0755',
       content => template('network/usr/local/bin/network_status.sh.erb');
     '/etc/network':
       ensure => directory;
     '/etc/network/interfaces':
-      ensure  => present,
+      ensure  => file,
       content => template('network/etc/network/interfaces.erb'),
       require => [
         File['/usr/local/bin/network_status.sh'],
         File['/etc/init.d/networking'],
       ];
   }
-  exec {'network_ifup_all':
+  exec { 'network_ifup_all':
     command     => '/sbin/ifup -a',
     subscribe   => File['/etc/network/interfaces'],
     refreshonly => true,
