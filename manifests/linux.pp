@@ -12,11 +12,9 @@ class network::linux {
   create_resources(sysctl, $sysctl)
   ensure_packages(['vlan', 'ifupdown', 'resolvconf'])
 
-  if $facts['os']['distro']['codename'] == 'bionic' {
-    if $facts['systemd'] {
-      service { ['systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online']:
-        enable => mask;
-      }
+  if $facts['systemd'] {
+    service { ['systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online']:
+      enable => mask;
     }
   }
 
