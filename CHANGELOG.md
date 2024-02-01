@@ -1,3 +1,6 @@
+## 2024-02-01 0.3.1
+* install ifupdown once and only once
+
 ## 2024-02-01 0.3.0
 * install ifupdown required by network scripts
 
