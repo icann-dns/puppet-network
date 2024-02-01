@@ -10,7 +10,7 @@ class network::linux {
   $prefer_ipv4 = $network::prefer_ipv4
   assert_private()
   create_resources(sysctl, $sysctl)
-  ensure_packages(['vlan'])
+  ensure_packages(['vlan', 'ifupdown'])
 
   if $facts['os']['distro']['codename'] == 'bionic' {
     package { ['ifupdown', 'resolvconf']:
@@ -57,6 +57,7 @@ class network::linux {
     command     => '/sbin/ifup -a',
     subscribe   => File['/etc/network/interfaces'],
     refreshonly => true,
+    require     => Package['ifupdown'],
   }
 
   service { 'networking':
@@ -72,6 +73,7 @@ class network::linux {
       File['/usr/local/bin/network_status.sh'],
       File['/etc/init.d/networking'],
       File['/etc/network/interfaces'],
+      Package['ifupdown'],
     ],
   }
 }
