@@ -10,13 +10,9 @@ class network::linux {
   $prefer_ipv4 = $network::prefer_ipv4
   assert_private()
   create_resources(sysctl, $sysctl)
-  ensure_packages(['vlan', 'ifupdown'])
+  ensure_packages(['vlan', 'ifupdown', 'resolvconf'])
 
   if $facts['os']['distro']['codename'] == 'bionic' {
-    package { ['ifupdown', 'resolvconf']:
-      ensure => present,
-      before => File['/etc/network/interfaces'],
-    }
     if $facts['systemd'] {
       service { ['systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online']:
         enable => mask;
@@ -57,7 +53,7 @@ class network::linux {
     command     => '/sbin/ifup -a',
     subscribe   => File['/etc/network/interfaces'],
     refreshonly => true,
-    require     => Package['ifupdown'],
+    require     => Package['ifupdown', 'resolvconf'],
   }
 
   service { 'networking':
@@ -73,7 +69,7 @@ class network::linux {
       File['/usr/local/bin/network_status.sh'],
       File['/etc/init.d/networking'],
       File['/etc/network/interfaces'],
-      Package['ifupdown'],
+      Package['ifupdown', 'resolvconf'],
     ],
   }
 }
