@@ -1,4 +1,4 @@
-## 2024-02-01 0.3.1
+## 2024-02-01 0.3.2
 * install ifupdown once and only once
 
 ## 2024-02-01 0.3.0
