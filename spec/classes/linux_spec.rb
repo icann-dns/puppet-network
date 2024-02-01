@@ -126,10 +126,6 @@ describe 'network::linux' do
         it do
           is_expected.to contain_file('/etc/network/interfaces').with(
             ensure: 'file',
-            require: [
-              'File[/usr/local/bin/network_status.sh]',
-              'File[/etc/init.d/networking]',
-            ],
           ).with_content(
             %r{auto enp0s3},
           ).with_content(
@@ -208,7 +204,6 @@ describe 'network::linux' do
             start: '/etc/init.d/networking restart',
             restart: '/etc/init.d/networking restart',
             subscribe: 'File[/etc/network/interfaces]',
-            require: ['File[/usr/local/bin/network_status.sh]', 'File[/etc/init.d/networking]', 'File[/etc/network/interfaces]'],
           )
         end
       end
