@@ -14,7 +14,8 @@ class network::linux {
 
   if $facts['systemd'] {
     service { ['systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online']:
-      enable => mask;
+      enable  => mask,
+      require => Service['networking'],
     }
   }
 
