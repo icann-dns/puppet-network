@@ -1,3 +1,6 @@
+## 2024-02-21 0.3.3
+* Require networking before masking networkd
+
 ## 2024-02-01 0.3.2
 * install ifupdown once and only once
 
