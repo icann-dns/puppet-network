@@ -1,3 +1,6 @@
+## 2024-08-21 0.4.0
+* Add motd
+
 ## 2024-02-21 0.3.3
 * Require networking before masking networkd
 
