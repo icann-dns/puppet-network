@@ -6,3 +6,4 @@ fixtures:
      stdlib: "puppetlabs/stdlib"
      sysctl: "thias/sysctl"
      host_core: "puppetlabs/host_core"
+     motd: "icann/motd"
