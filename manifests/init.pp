@@ -58,6 +58,14 @@ class network (
   Hash                               $additional_hosts = {},
   Optional[String]                   $primary          = undef,
 ) {
+  $_dummy4 = Hash($dummy4.map |$service, $ip| { ["${service}_v4", Array($ip, true)] })
+  $_dummy6 = Hash($dummy6.map |$service, $ip| { ["${service}_v6", Array($ip, true)] })
+  ($_dummy4 + $_dummy6).each |$service, $ips| {
+    motd::message { $service:
+      message  => "${service}: ${ips.join(' ').motd::ansi::attr('bold')}",
+      priority => 60,
+    }
+  }
   resources { 'host':
     purge => $purge_hosts,
   }
