@@ -49,7 +49,7 @@ class network::linux {
       ];
   }
   exec { 'network_ifup_all':
-    command     => '/sbin/ifup -a',
+    command     => '/sbin/ifup -a --ignore-errors',
     subscribe   => File['/etc/network/interfaces'],
     refreshonly => true,
     require     => Package['ifupdown', 'resolvconf'],

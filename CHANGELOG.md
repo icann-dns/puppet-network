@@ -1,3 +1,6 @@
+## 2024-08-21 0.4.1
+* Use ignore-errors on ifup to ignore 'RTNETLINK answers: File exists'
+
 ## 2024-08-21 0.4.0
 * Add motd
 
