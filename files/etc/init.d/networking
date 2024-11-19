@@ -118,4 +118,3 @@ force-reload|restart)
 esac
 
 exit 0
-
