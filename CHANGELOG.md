@@ -1,3 +1,7 @@
+## 2024-11-19 0.5.0
+* Update to use modulesync
+* switch to augeasproviders_sysctl
+
 ## 2024-08-21 0.4.1
 * Use ignore-errors on ifup to ignore 'RTNETLINK answers: File exists'
 
