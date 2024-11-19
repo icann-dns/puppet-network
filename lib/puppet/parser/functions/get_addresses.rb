@@ -5,12 +5,12 @@
 # rubocop:disable Style/DoubleNegation
 module Puppet::Parser::Functions
   newfunction(:get_addresses, type: :rvalue, doc: <<-EOS
-    # @param send_primary return the primary interface in the response
-    # @param dummy_name if present returne entries matching the dummy name
-    # @param send_ipv4 send IPv4 addresses
-    # @param send_ipv6 send IPv6 addresses
-    # @param join if present send the result as a joined list using this as a join string
-    # @return Array returns an array of IP addresses unless join is present when we return a joined string
+    @param send_primary return the primary interface in the response
+    @param dummy_name if present returne entries matching the dummy name
+    @param send_ipv4 send IPv4 addresses
+    @param send_ipv6 send IPv6 addresses
+    @param join if present send the result as a joined list using this as a join string
+    @return Array returns an array of IP addresses unless join is present when we return a joined string
     EOS
              ) do |args|
     send_primary = true
