@@ -7,18 +7,18 @@
 ### Classes
 
 * [`network`](#network): Used to configure networking for linux and freebsd hosts
-* [`network::freebsd`](#networkfreebsd): Used to configure networking for freebsd hosts
-* [`network::linux`](#networklinux): Used to configure networking for linux hosts
+* [`network::freebsd`](#network--freebsd): Used to configure networking for freebsd hosts
+* [`network::linux`](#network--linux): Used to configure networking for linux hosts
 
 ### Functions
 
-* [`get_addresses`](#get_addresses): # @param send_primary return the primary interface in the response # @param dummy_name if present returne entries matching the dummy name # @
+* [`get_addresses`](#get_addresses)
 
 ### Data types
 
-* [`Network::Dummy4`](#networkdummy4): type to represent IPv4 dummy interfaces
-* [`Network::Dummy6`](#networkdummy6): type to represent IPv4 dummy interfaces
-* [`Network::Interface`](#networkinterface): struct like object for describing interfaces
+* [`Network::Dummy4`](#Network--Dummy4): type to represent IPv4 dummy interfaces
+* [`Network::Dummy6`](#Network--Dummy6): type to represent IPv4 dummy interfaces
+* [`Network::Interface`](#Network--Interface): struct like object for describing interfaces
 
 ## Classes
 
@@ -68,16 +68,16 @@ class { 'network':
 
 The following parameters are available in the `network` class:
 
-* [`interfaces`](#interfaces)
-* [`dummy4`](#dummy4)
-* [`dummy6`](#dummy6)
-* [`sysctl`](#sysctl)
-* [`additional_hosts`](#additional_hosts)
-* [`prefer_ipv4`](#prefer_ipv4)
-* [`purge_hosts`](#purge_hosts)
-* [`primary`](#primary)
+* [`interfaces`](#-network--interfaces)
+* [`dummy4`](#-network--dummy4)
+* [`dummy6`](#-network--dummy6)
+* [`sysctl`](#-network--sysctl)
+* [`additional_hosts`](#-network--additional_hosts)
+* [`prefer_ipv4`](#-network--prefer_ipv4)
+* [`purge_hosts`](#-network--purge_hosts)
+* [`primary`](#-network--primary)
 
-##### <a name="interfaces"></a>`interfaces`
+##### <a name="-network--interfaces"></a>`interfaces`
 
 Data type: `Hash[String[1],Network::Interface]`
 
@@ -85,7 +85,7 @@ a hash of interfaces to create
 
 Default value: `{}`
 
-##### <a name="dummy4"></a>`dummy4`
+##### <a name="-network--dummy4"></a>`dummy4`
 
 Data type: `Hash[String[1], Network::Dummy4]`
 
@@ -93,7 +93,7 @@ a hash of ipv4 dummy interfaces to create
 
 Default value: `{}`
 
-##### <a name="dummy6"></a>`dummy6`
+##### <a name="-network--dummy6"></a>`dummy6`
 
 Data type: `Hash[String[1], Network::Dummy6]`
 
@@ -101,7 +101,7 @@ a hash of ipv6 dummy interfaces to create
 
 Default value: `{}`
 
-##### <a name="sysctl"></a>`sysctl`
+##### <a name="-network--sysctl"></a>`sysctl`
 
 Data type: `Hash`
 
@@ -109,7 +109,7 @@ a hash of sysctl types to pass to thias/sysctl
 
 Default value: `{}`
 
-##### <a name="additional_hosts"></a>`additional_hosts`
+##### <a name="-network--additional_hosts"></a>`additional_hosts`
 
 Data type: `Hash`
 
@@ -117,35 +117,35 @@ a hash of additional `host` type entries to create
 
 Default value: `{}`
 
-##### <a name="prefer_ipv4"></a>`prefer_ipv4`
+##### <a name="-network--prefer_ipv4"></a>`prefer_ipv4`
 
 Data type: `Boolean`
 
 if true then the system will prefer IPv4 connections over IPv6
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="purge_hosts"></a>`purge_hosts`
+##### <a name="-network--purge_hosts"></a>`purge_hosts`
 
 Data type: `Boolean`
 
 if true purge any `host` entries not managed by puppet
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="primary"></a>`primary`
+##### <a name="-network--primary"></a>`primary`
 
 Data type: `Optional[String]`
 
 the name of the primary interface
 
-Default value: ``undef``
+Default value: `undef`
 
-### <a name="networkfreebsd"></a>`network::freebsd`
+### <a name="network--freebsd"></a>`network::freebsd`
 
 Used to configure networking for freebsd hosts
 
-### <a name="networklinux"></a>`network::linux`
+### <a name="network--linux"></a>`network::linux`
 
 Used to configure networking for linux hosts
 
@@ -155,47 +155,59 @@ Used to configure networking for linux hosts
 
 Type: Ruby 3.x API
 
-# @param send_primary return the primary interface in the response
-# @param dummy_name if present returne entries matching the dummy name
-# @param send_ipv4 send IPv4 addresses
-# @param send_ipv6 send IPv6 addresses
-# @param join if present send the result as a joined list using this as a join string
-# @return Array returns an array of IP addresses unless join is present when we return a joined string
+The get_addresses function.
 
-#### `get_addresses()`
+#### `get_addresses(Any $send_primary, Any $dummy_name, Any $send_ipv4, Any $send_ipv6, Any $join)`
 
-# @param send_primary return the primary interface in the response
-# @param dummy_name if present returne entries matching the dummy name
-# @param send_ipv4 send IPv4 addresses
-# @param send_ipv6 send IPv6 addresses
-# @param join if present send the result as a joined list using this as a join string
-# @return Array returns an array of IP addresses unless join is present when we return a joined string
+The get_addresses function.
 
-Returns: `Any`
+Returns: `Any` Array returns an array of IP addresses unless join is present when we return a joined string
+
+##### `send_primary`
+
+Data type: `Any`
+
+return the primary interface in the response
+
+##### `dummy_name`
+
+Data type: `Any`
+
+if present returne entries matching the dummy name
+
+##### `send_ipv4`
+
+Data type: `Any`
+
+send IPv4 addresses
+
+##### `send_ipv6`
+
+Data type: `Any`
+
+send IPv6 addresses
+
+##### `join`
+
+Data type: `Any`
+
+if present send the result as a joined list using this as a join string
 
 ## Data types
 
-### <a name="networkdummy4"></a>`Network::Dummy4`
+### <a name="Network--Dummy4"></a>`Network::Dummy4`
 
 type to represent IPv4 dummy interfaces
 
-Alias of
+Alias of `Variant[Stdlib::IP::Address::V4::Nosubnet, Array[Stdlib::IP::Address::V4::Nosubnet]]`
 
-```puppet
-Variant[Stdlib::IP::Address::V4::Nosubnet, Array[Stdlib::IP::Address::V4::Nosubnet]]
-```
-
-### <a name="networkdummy6"></a>`Network::Dummy6`
+### <a name="Network--Dummy6"></a>`Network::Dummy6`
 
 type to represent IPv4 dummy interfaces
 
-Alias of
+Alias of `Variant[Stdlib::IP::Address::V6::Nosubnet, Array[Stdlib::IP::Address::V6::Nosubnet]]`
 
-```puppet
-Variant[Stdlib::IP::Address::V6::Nosubnet, Array[Stdlib::IP::Address::V6::Nosubnet]]
-```
-
-### <a name="networkinterface"></a>`Network::Interface`
+### <a name="Network--Interface"></a>`Network::Interface`
 
 struct like object for describing interfaces
 
