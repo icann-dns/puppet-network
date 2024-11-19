@@ -4,6 +4,7 @@
 fixtures:
   forge_modules:
      stdlib: "puppetlabs/stdlib"
-     sysctl: "thias/sysctl"
+     augeasproviders_core: "puppet/augeasproviders_core"
+     augeasproviders_sysctl: "puppet/augeasproviders_sysctl"
      host_core: "puppetlabs/host_core"
      motd: "icann/motd"
