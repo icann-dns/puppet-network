@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/DoubleNegation
 facts = {
   ipv6_capable: false,
@@ -9,8 +11,9 @@ if File.exist? '/etc/rc.conf.d/network'
   File.open('/etc/rc.conf.d/network', 'r') do |f|
     f.each_line do |line|
       next unless line[0..1] == '#:'
+
       line.strip!
-      tokens = line[2..-1].split('=')
+      tokens = line[2..].split('=')
       facts[tokens[0].to_sym] = tokens[1]
     end
   end
@@ -52,8 +55,9 @@ if File.exist? '/etc/network/interfaces'
   File.open('/etc/network/interfaces', 'r') do |f|
     f.each_line do |line|
       next unless line[0..1] == '#:'
+
       line.strip!
-      tokens = line[2..-1].split('=')
+      tokens = line[2..].split('=')
       facts[tokens[0].to_sym] = tokens[1]
     end
   end
@@ -78,3 +82,4 @@ Facter.add(:ipv4_primary_interface) do
     facts[:ipv4_primary_interface]
   end
 end
+# rubocop:enable Style/DoubleNegation
