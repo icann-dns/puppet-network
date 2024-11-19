@@ -15,7 +15,7 @@ describe 'network' do
       let(:params) do
         {
           interfaces: {
-            primary => {
+            'eth0' => {
               'addr4' => '192.0.2.2/24',
               'gw4' => '192.0.2.1',
               'addr6' => '2001:db8::2/64',
@@ -27,13 +27,6 @@ describe 'network' do
             },
           },
         }
-      end
-
-      case facts[:kernel]
-      when 'FreeBSD'
-        let(:primary) { 'em0' }
-      else
-        let(:primary) { 'enp0s3' }
       end
 
       describe 'check default config' do
