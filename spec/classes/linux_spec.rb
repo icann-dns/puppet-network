@@ -13,7 +13,7 @@ describe 'network::linux' do
     <<-NETWORK
     class {'network':
       interfaces => {
-        'enp0s3' => {
+        'eth0' => {
           'addr4' => '192.0.2.2/24',
           'gw4' => '192.0.2.1',
           'addr6' => '2001:db8::2/64',
@@ -35,7 +35,10 @@ describe 'network::linux' do
         'http' => ['2001:db8::80', '2001:db8::443'],
       },
       sysctl => {
-        'net.core.somaxconn' => { 'value' => '1024' },
+        'net.core.somaxconn' => {
+          'value' => '1024',
+          'ensure' => 'present',
+        },
       }
     }
     NETWORK
@@ -45,7 +48,7 @@ describe 'network::linux' do
     supported_os: [
       {
         'operatingsystem'        => 'Ubuntu',
-        'operatingsystemrelease' => ['16.04'],
+        'operatingsystemrelease' => ['20.04'],
       },
     ],
   }
@@ -73,7 +76,7 @@ describe 'network::linux' do
           is_expected.to contain_file(
             '/etc/sysctl.d/net.ipv6.conf.interface.accept_ra.conf'
           ).with_ensure('file').with_content(
-            %r{net.ipv6.conf.enp0s3.accept_ra = 0}
+            %r{net.ipv6.conf.eth0.accept_ra = 0}
           ).with_content(
             %r{net.ipv6.conf.eth1.accept_ra = 0}
           )
@@ -110,7 +113,7 @@ describe 'network::linux' do
           ).with_content(
             %r{#{ping} #{loopback} 2001:2b8:3 1>/dev/null 2>&1 || exit 1}
           ).with_content(
-            %r{#{ping} enp0s3 2001:2b8:1 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} eth0 2001:2b8:1 1>/dev/null 2>&1 || exit 1}
           ).with_content(
             %r{#{ping} 127.0.0.1 192.0.2.53 1>/dev/null 2>&1 || exit 1}
           ).with_content(
@@ -136,12 +139,12 @@ describe 'network::linux' do
           is_expected.to contain_file('/etc/network/interfaces').with(
             ensure: 'file'
           ).with_content(
-            %r{auto enp0s3}
+            %r{auto eth0}
           ).with_content(
             %r{auto eth1}
           ).with_content(
             %r{
-            iface\senp0s3\sinet\sstatic
+            iface\seth0\sinet\sstatic
             \s+address\s192.0.2.2/24
             \s+\#This\sis\signored\sif\sunbound\sis\sinstalled
             \s+dns-nameservers\s8.8.8.8
@@ -156,7 +159,7 @@ describe 'network::linux' do
             }x
           ).with_content(
             %r{
-            iface\senp0s3\sinet6\sstatic
+            iface\seth0\sinet6\sstatic
             \s+address\s2001:db8::2/64
             \s+\#This\sis\signored\sif\sunbound\sis\sinstalled
             \s+dns-nameservers\s2001:4860:4860::8888
@@ -199,7 +202,7 @@ describe 'network::linux' do
 
         it do
           is_expected.to contain_exec('network_ifup_all').with(
-            command: '/sbin/ifup -a',
+            command: '/sbin/ifup -a --ignore-errors',
             subscribe: 'File[/etc/network/interfaces]',
             refreshonly: true
           )
@@ -225,13 +228,13 @@ describe 'network::linux' do
             <<-NETWORK
             class {'network':
               interfaces => {
-                'enp0s3' => {
+                'eth0' => {
                   'addr4' => '192.0.2.2/24',
                   'gw4' => '192.0.2.1',
                 },
-                'enp0s3.42' => {
+                'eth0.42' => {
                   'addr4' => '192.0.2.42/24',
-                  'vlan_raw_device' => 'enp0s3',
+                  'vlan_raw_device' => 'eth0',
                 }
               },
               sysctl => {
@@ -253,17 +256,17 @@ describe 'network::linux' do
           it do
             is_expected.to contain_file('/etc/network/interfaces').with_content(
               %r{
-              iface\senp0s3\sinet\sstatic
+              iface\seth0\sinet\sstatic
               \s+address\s192.0.2.2/24
               \s+dns-search\sexample.com
               \s+gateway\s192.0.2.1
               }x
             ).with_content(
               %r{
-              iface\senp0s3.42\sinet\sstatic
+              iface\seth0.42\sinet\sstatic
               \s+address\s192.0.2.42/24
               \s+dns-search\sexample.com
-              \s+vlan-raw-device\senp0s3
+              \s+vlan-raw-device\seth0
               }x
             )
           end

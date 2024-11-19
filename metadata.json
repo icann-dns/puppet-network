@@ -6,8 +6,8 @@
   "license": "Apache-2.0",
   "source": "",
   "dependencies": [
-    {"name":"puppetlabs-stdlib","version_requirement":">= 4.25.1 <5.0.0"},
-    {"name":"thias-sysctl","version_requirement":">= 1.0.6 <2.0.0"},
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.25.1 <10.0.0"},
+    {"name":"puppet-augeasproviders_sysctl","version_requirement":">= 1.0.6 <4.0.0"},
     {"name":"puppetlabs-host_core","version_requirement":">= 1.2.0 <2.0.0"},
     {"name":"icann-motd","version_requirement":">= 0.1.0 <1.0.0"}
   ],
@@ -21,14 +21,14 @@
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "16.04"
+        "18.04", "20.04"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.7.0 < 6.0.0"
+      "version_requirement": ">= 4.7.0 < 9.0.0"
     }
   ],
   "pdk-version": "1.5.0",

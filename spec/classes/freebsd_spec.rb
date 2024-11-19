@@ -15,7 +15,7 @@ describe 'network::freebsd' do
     <<-NETWORK
     class {'network':
       interfaces => {
-        'em0' => {
+        'eth0' => {
           'addr4' => '192.0.2.2/24',
           'gw4' => '192.0.2.1',
           'addr6' => '2001:db8::2/64',
@@ -77,7 +77,7 @@ describe 'network::freebsd' do
           ).with_content(
             %r{#{ping} #{loopback} 2001:2b8:3 1>/dev/null 2>&1 || exit 1}
           ).with_content(
-            %r{#{ping} em0 2001:2b8:1 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} eth0 2001:2b8:1 1>/dev/null 2>&1 || exit 1}
           ).with_content(
             %r{#{ping} 127.0.0.1 192.0.2.53 1>/dev/null 2>&1 || exit 1}
           ).with_content(
@@ -94,37 +94,39 @@ describe 'network::freebsd' do
         end
 
         it do
+          # rubocop:disable Layout/LineContinuationSpacing
           is_expected.to contain_file('/etc/rc.conf.d/network').with_ensure(
             'file'
           ).with_content(
             %r{hostname="network.example.com"}
           ).with_content(
-            %r{ifconfig_em0="inet 192.0.2.2/24"}
+            %r{ifconfig_eth0="inet 192.0.2.2/24"}
           ).with_content(
             %r{ifconfig_eth1="inet 192.0.2.3/24"}
           ).with_content(
             %r{defaultrouter="192.0.2.1"}
           ).with_content(
-            %r{netwait_if=em0}
+            %r{netwait_if=eth0}
           ).with_content(
             %r{netwait_ip=192.0.2.1}
           ).with_content(
-            %r{ifconfig_em0_ipv6="inet6 2001:db8::2/64"}
+            %r{ifconfig_eth0_ipv6="inet6 2001:db8::2/64"}
           ).with_content(
             %r{ipv6_defaultrouter="2001:db8::1"}
           ).with_content(
             %r{ifconfig_eth1_ipv6="inet6 2001:db8::3/64"}
           ).with_content(
             %r{
-            ifconfig_lo0_aliases="\ \
-            \s+inet\s192.0.2.53/32\s\ \
-            \s+inet\s192.0.2.80/32\s\ \
-            \s+inet\s192.0.2.43/32\s\ \
-            \s+inet6\s2001:db8::53/128\s\ \
-            \s+inet6\s2001:db8::80/128\s\ \
+            ifconfig_lo0_aliases="\\
+            \s+inet\s192.0.2.53/32\s\\
+            \s+inet\s192.0.2.80/32\s\\
+            \s+inet\s192.0.2.43/32\s\\
+            \s+inet6\s2001:db8::53/128\s\\
+            \s+inet6\s2001:db8::80/128\s\\
             \s+inet6\s2001:db8::443/128"
             }x
           )
+          # rubocop:enable Layout/LineContinuationSpacing
         end
 
         it do
