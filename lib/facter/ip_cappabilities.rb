@@ -13,7 +13,7 @@ if File.exist? '/etc/rc.conf.d/network'
       next unless line[0..1] == '#:'
 
       line.strip!
-      tokens = line[2..].split('=')
+      tokens = line[2..-1].split('=')  # rubocop:disable Style/SlicingWithRange
       facts[tokens[0].to_sym] = tokens[1]
     end
   end
@@ -57,7 +57,7 @@ if File.exist? '/etc/network/interfaces'
       next unless line[0..1] == '#:'
 
       line.strip!
-      tokens = line[2..].split('=')
+      tokens = line[2..-1].split('=')  # rubocop:disable Style/SlicingWithRange
       facts[tokens[0].to_sym] = tokens[1]
     end
   end

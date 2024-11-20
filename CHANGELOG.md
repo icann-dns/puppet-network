@@ -1,3 +1,6 @@
+## 2024-11-20 0.5.1
+* Use old ruby syntax as we need to support older versions
+
 ## 2024-11-19 0.5.0
 * Update to use modulesync
 * switch to augeasproviders_sysctl
