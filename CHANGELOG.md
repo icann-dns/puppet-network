@@ -1,3 +1,6 @@
+## 2024-11-20 0.6.0
+* drop legacy facts
+
 ## 2024-11-20 0.5.1
 * Use old ruby syntax as we need to support older versions
 
