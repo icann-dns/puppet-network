@@ -5,14 +5,14 @@ iface lo inet loopback
 
 <%- @interfaces.each_pair do |iface, config| -%>
 auto <%= iface %>
-  <%- if config['addr4'] then -%> 
+  <%- if config['addr4'] then -%>
 iface <%= iface %> inet static
   address <%= config['addr4'] %>
     <%- if config['nameservers'] -%>
   #This is ignored if unbound is installed
   dns-nameservers <%= config['nameservers'].join(" ") %>
     <%- end -%>
-  dns-search <%= @domain %>
+  dns-search <%= @facts['networking']['domain'] %>
     <%- if config['gw4'] -%>
   gateway <%= config['gw4'] %>
 #:ipv4_capable=true
@@ -22,12 +22,12 @@ iface <%= iface %> inet static
   vlan-raw-device <%= config['vlan_raw_device'] %>
     <%- end -%>
   <%- end -%>
-  <%- if config['addr6'] then 
+  <%- if config['addr6'] then
     @ipv6 = true -%>
 iface lo inet6 loopback
 iface <%= iface %> inet6 static
   address <%= config['addr6'] %>
-    <%- if config['nameservers6'] -%> 
+    <%- if config['nameservers6'] -%>
   #This is ignored if unbound is installed
   dns-nameservers <%= config['nameservers6'].join(" ") %>
     <%- end -%>
@@ -58,7 +58,7 @@ iface dummy0 inet static
 auto dummy0:<%= @iface_count - 1 %>
 iface dummy0:<%= @iface_count - 1 %> inet static
   address <%= addr %>/32
-      <%- end -%> 
+      <%- end -%>
       <%- @iface_count += 1 -%>
     <%- end -%>
   <%- end -%>
