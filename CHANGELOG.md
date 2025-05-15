@@ -1,3 +1,6 @@
+## 2025-05-15 0.7.0
+* Add new v4 puppet function network::get_addresses
+
 ## 2024-11-20 0.6.0
 * drop legacy facts
 

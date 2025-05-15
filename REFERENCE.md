@@ -13,6 +13,7 @@
 ### Functions
 
 * [`get_addresses`](#get_addresses)
+* [`network::get_addresses`](#network--get_addresses)
 
 ### Data types
 
@@ -192,6 +193,112 @@ send IPv6 addresses
 Data type: `Any`
 
 if present send the result as a joined list using this as a join string
+
+### <a name="network--get_addresses"></a>`network::get_addresses`
+
+Type: Ruby 4.x API
+
+The network::get_addresses function.
+
+#### Examples
+
+##### get_addresses
+
+```puppet
+get_addresses()
+```
+
+##### get_addresses with dummy name
+
+```puppet
+get_addresses('dummy_name')
+```
+
+##### get_addresses with dummy name and send_primary
+
+```puppet
+get_addresses('dummy_name', true)
+```
+
+##### get_addresses with dummy name and send_primary and send_ipv4
+
+```puppet
+get_addresses('dummy_name', true, true)
+```
+
+##### get_addresses with dummy name and send_primary and send_ipv4 and send_ipv6
+
+```puppet
+get_addresses('dummy_name', true, true, true)
+```
+
+#### `network::get_addresses(Variant[Array[String[1]], String[1]] $dummy_name, Optional[Boolean] $send_primary, Optional[Boolean] $send_ipv4, Optional[Boolean] $send_ipv6, Optional[String] $join)`
+
+The network::get_addresses function.
+
+Returns: `Variant[Array[String[1]], String[1]]`
+
+##### Examples
+
+###### get_addresses
+
+```puppet
+get_addresses()
+```
+
+###### get_addresses with dummy name
+
+```puppet
+get_addresses('dummy_name')
+```
+
+###### get_addresses with dummy name and send_primary
+
+```puppet
+get_addresses('dummy_name', true)
+```
+
+###### get_addresses with dummy name and send_primary and send_ipv4
+
+```puppet
+get_addresses('dummy_name', true, true)
+```
+
+###### get_addresses with dummy name and send_primary and send_ipv4 and send_ipv6
+
+```puppet
+get_addresses('dummy_name', true, true, true)
+```
+
+##### `dummy_name`
+
+Data type: `Variant[Array[String[1]], String[1]]`
+
+
+
+##### `send_primary`
+
+Data type: `Optional[Boolean]`
+
+
+
+##### `send_ipv4`
+
+Data type: `Optional[Boolean]`
+
+
+
+##### `send_ipv6`
+
+Data type: `Optional[Boolean]`
+
+
+
+##### `join`
+
+Data type: `Optional[String]`
+
+
 
 ## Data types
 
