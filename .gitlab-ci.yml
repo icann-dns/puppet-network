@@ -18,6 +18,8 @@ stages:
     - gem --version
     - bundle config set --local path 'vendor/bundle'
     - bundle install
+    # Delete all windows fact files since they often contain illegal backslashes
+    - find vendor/bundle -name "*windows*.facts" -delete
 
 lint:
   <<: *ruby_template
