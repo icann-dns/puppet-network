@@ -1,3 +1,6 @@
+## 2026-01-19 0.8.0
+* Add support for bonded interfaces
+
 ## 2025-05-15 0.7.0
 * Add new v4 puppet function network::get_addresses
 
