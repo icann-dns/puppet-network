@@ -21,6 +21,21 @@ iface <%= iface %> inet static
     <%- if config['vlan_raw_device'] -%>
   vlan-raw-device <%= config['vlan_raw_device'] %>
     <%- end -%>
+    <%- if config.has_key?("bond_interfaces") -%>
+  # Bonding options
+  bond-mode 802.3ad
+  bond-miimon 100
+  bond-lacp-rate 1
+  bond-xmit-hash-policy layer3+4
+  bond-slaves <%= config['bond_interfaces'].join(" ") %>
+    <%- end -%>
+  <%- end -%>
+  <%- if config.has_key?("bond_interfaces") -%>
+    <%- config['bond_interfaces'].each do |bond_iface| -%>
+auto <%= bond_iface %>
+iface <%= bond_iface %> inet manual
+  bond-master bond0
+    <%- end -%>
   <%- end -%>
   <%- if config['addr6'] then
     @ipv6 = true -%>

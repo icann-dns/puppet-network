@@ -1,3 +1,10 @@
 <% @interfaces.each_key.map{|i| [i.split('.')[0], i] }.flatten.uniq.each do |iface| -%>
 net.ipv6.conf.<%= iface %>.accept_ra = 0
 <% end %>
+<% @interfaces.each do |iface, params|
+    if params.key?('bond_interfaces')
+      params['bond_interfaces'].each do |bond_iface| -%>
+net.ipv6.conf.<%= bond_iface %>.accept_ra = 0
+<%    end
+    end
+  end -%>

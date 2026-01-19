@@ -272,7 +272,74 @@ describe 'network::linux' do
           end
         end
       end
+
+      describe 'Bond interface' do
+        context 'change prefer_ipv4, no nameserver with vlan' do
+          let(:pre_condition) do
+            <<-NETWORK
+            class {'network':
+              primary => 'bond0',
+              interfaces => {
+                'bond0' => {
+                  'addr4' => '192.0.2.2/24',
+                  'gw4' => '192.0.2.1',
+                  'bond_interfaces' => ['eth0', 'eth1'],
+                },
+              },
+              sysctl => {
+                'net.core.somaxconn' => { 'value' => '1024' },
+              },
+              prefer_ipv4 => false,
+            }
+            NETWORK
+          end
+
+          it do
+            is_expected.to contain_file('/etc/gai.conf').with_ensure(
+              'file'
+            ).without_content(
+              %r{precedence ::ffff:0:0/96 100}
+            )
+          end
+
+          it do
+            is_expected.to contain_file('/etc/network/interfaces').
+              with_content(
+                %r{
+                iface\sbond0\sinet\sstatic
+                \s+address\s192.0.2.2/24
+                \s+dns-search\sexample.com
+                \s+gateway\s192.0.2.1
+                }x
+              ).
+              with_content(
+                %r{
+                \s+bond-mode\s802.3ad
+                \s+bond-miimon\s100
+                \s+bond-lacp-rate\s1
+                \s+bond-xmit-hash-policy\slayer3\+4
+                \s+bond-slaves\seth0\seth1
+                }x
+              ).
+              with_content(
+                %r{
+                \s+auto\seth0
+                \s+iface\seth0\sinet\smanual
+                \s+bond-master\sbond0
+                }x
+              ).
+              with_content(
+                %r{
+                \s+auto\seth1
+                \s+iface\seth1\sinet\smanual
+                \s+bond-master\sbond0
+                }x
+              )
+          end
+        end
+      end
     end
   end
 end
+
 # rubocop:enable RSpec/MultipleMemoizedHelpers

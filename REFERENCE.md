@@ -329,6 +329,7 @@ Struct[{
     nameservers     => Optional[Array[Stdlib::IP::Address::V4::Nosubnet]],
     nameservers6    => Optional[Array[Stdlib::IP::Address::V6::Nosubnet]],
     vlan_raw_device => Optional[String[1]],
+    bond_interfaces => Optional[Array[String[1],2]],
   }]
 ```
 
