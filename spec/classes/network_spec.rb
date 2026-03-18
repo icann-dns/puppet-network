@@ -45,14 +45,14 @@ describe 'network' do
         it do
           is_expected.to contain_host('network.example.com').with(
             ip: '192.0.2.2',
-            host_aliases: ['network']
+            host_aliases: ['network'],
           )
         end
 
         it do
           is_expected.to contain_host('network').with(
             ip: '2001:db8::2',
-            host_aliases: ['network.example.com']
+            host_aliases: ['network.example.com'],
           )
         end
       end
@@ -66,7 +66,7 @@ describe 'network' do
                   'host_aliases' => ['test'],
                   'ip' => '192.0.2.3',
                 },
-              }
+              },
             )
           end
 
@@ -75,7 +75,7 @@ describe 'network' do
           it do
             is_expected.to contain_host('test.example.com').with(
               ip: '192.0.2.3',
-              host_aliases: ['test']
+              host_aliases: ['test'],
             )
           end
         end
@@ -88,14 +88,14 @@ describe 'network' do
           it do
             is_expected.to contain_host('network.example.com').with(
               ip: '192.0.2.3',
-              host_aliases: ['network']
+              host_aliases: ['network'],
             )
           end
 
           it do
             is_expected.to contain_host('network').with(
               ip: '2001:db8::3',
-              host_aliases: ['network.example.com']
+              host_aliases: ['network.example.com'],
             )
           end
         end

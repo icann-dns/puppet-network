@@ -65,56 +65,55 @@ describe 'network::freebsd' do
         it do
           is_expected.to contain_file('/usr/local/bin/network_status.sh').with(
             ensure: 'file',
-            mode: '0755'
+            mode: '0755',
           ).with_content(
-            %r{#{ping} 127.0.0.1 192.0.2.2 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} 127.0.0.1 192.0.2.2 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} 127.0.0.1 192.0.2.3 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} 127.0.0.1 192.0.2.3 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} 192.0.2.2 192.0.2.1 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} 192.0.2.2 192.0.2.1 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} #{loopback} 2001:2b8:2 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} #{loopback} 2001:2b8:2 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} #{loopback} 2001:2b8:3 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} #{loopback} 2001:2b8:3 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} eth0 2001:2b8:1 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} eth0 2001:2b8:1 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} 127.0.0.1 192.0.2.53 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} 127.0.0.1 192.0.2.53 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} 127.0.0.1 192.0.2.80 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} 127.0.0.1 192.0.2.80 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} 127.0.0.1 192.0.2.43 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} 127.0.0.1 192.0.2.43 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} #{loopback} 2001:2b8:53 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} #{loopback} 2001:2b8:53 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} #{loopback} 2001:2b8:80 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} #{loopback} 2001:2b8:80 1>/dev/null 2>&1 || exit 1},
           ).with_content(
-            %r{#{ping} #{loopback} 2001:2b8:443 1>/dev/null 2>&1 || exit 1}
+            %r{#{ping} #{loopback} 2001:2b8:443 1>/dev/null 2>&1 || exit 1},
           )
         end
 
         it do
-          # rubocop:disable Layout/LineContinuationSpacing
           is_expected.to contain_file('/etc/rc.conf.d/network').with_ensure(
-            'file'
+            'file',
           ).with_content(
-            %r{hostname="network.example.com"}
+            %r{hostname="network.example.com"},
           ).with_content(
-            %r{ifconfig_eth0="inet 192.0.2.2/24"}
+            %r{ifconfig_eth0="inet 192.0.2.2/24"},
           ).with_content(
-            %r{ifconfig_eth1="inet 192.0.2.3/24"}
+            %r{ifconfig_eth1="inet 192.0.2.3/24"},
           ).with_content(
-            %r{defaultrouter="192.0.2.1"}
+            %r{defaultrouter="192.0.2.1"},
           ).with_content(
-            %r{netwait_if=eth0}
+            %r{netwait_if=eth0},
           ).with_content(
-            %r{netwait_ip=192.0.2.1}
+            %r{netwait_ip=192.0.2.1},
           ).with_content(
-            %r{ifconfig_eth0_ipv6="inet6 2001:db8::2/64"}
+            %r{ifconfig_eth0_ipv6="inet6 2001:db8::2/64"},
           ).with_content(
-            %r{ipv6_defaultrouter="2001:db8::1"}
+            %r{ipv6_defaultrouter="2001:db8::1"},
           ).with_content(
-            %r{ifconfig_eth1_ipv6="inet6 2001:db8::3/64"}
+            %r{ifconfig_eth1_ipv6="inet6 2001:db8::3/64"},
           ).with_content(
             %r{
             ifconfig_lo0_aliases="\\
@@ -124,9 +123,8 @@ describe 'network::freebsd' do
             \s+inet6\s2001:db8::53/128\s\\
             \s+inet6\s2001:db8::80/128\s\\
             \s+inet6\s2001:db8::443/128"
-            }x
+            }x,
           )
-          # rubocop:enable Layout/LineContinuationSpacing
         end
 
         it do
@@ -143,7 +141,7 @@ describe 'network::freebsd' do
             require: [
               'File[/etc/rc.conf.d/network]',
               'File[/usr/local/bin/network_status.sh]',
-            ]
+            ],
           )
         end
 
@@ -157,7 +155,7 @@ describe 'network::freebsd' do
             start: '/etc/rc.d/routing start',
             restart: '/etc/rc.d/routing restart  &>/dev/null',
             subscribe: 'Service[networking]',
-            require: ['File[/usr/local/bin/network_status.sh]']
+            require: ['File[/usr/local/bin/network_status.sh]'],
           )
         end
       end
