@@ -34,7 +34,7 @@ iface <%= iface %> inet static
     <%- config['bond_interfaces'].each do |bond_iface| -%>
 auto <%= bond_iface %>
 iface <%= bond_iface %> inet manual
-  bond-master bond0
+  bond-master <%= iface %>
     <%- end -%>
   <%- end -%>
   <%- if config['addr6'] then
