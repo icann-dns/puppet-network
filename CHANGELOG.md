@@ -1,3 +1,6 @@
+## 2026-03-18 0.8.1
+* Don't hardcode bond0 as the master interface
+
 ## 2026-01-19 0.8.0
 * Add support for bonded interfaces
 
