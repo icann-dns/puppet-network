@@ -1,6 +1,9 @@
 # @summary
 #   Used to configure networking for linux hosts
-class network::linux {
+# @param packages An array of packages to ensure are installed.
+class network::linux (
+  Array[String] $packages = ['vlan', 'ifupdown', 'resolvconf'],
+) {
   include network
 
   $interfaces  = $network::interfaces
@@ -10,12 +13,11 @@ class network::linux {
   $prefer_ipv4 = $network::prefer_ipv4
   assert_private()
   create_resources(sysctl, $sysctl)
-  ensure_packages(['vlan', 'ifupdown', 'resolvconf'])
+  ensure_packages($packages)
 
   if $facts['systemd'] {
     service { ['systemd-networkd', 'systemd-networkd.socket', 'networkd-dispatcher', 'systemd-networkd-wait-online']:
       enable  => mask,
-      require => Service['networking'],
     }
   }
 
@@ -42,17 +44,13 @@ class network::linux {
       ensure => directory;
     '/etc/network/interfaces':
       ensure  => file,
-      content => template('network/etc/network/interfaces.erb'),
-      require => [
-        File['/usr/local/bin/network_status.sh'],
-        File['/etc/init.d/networking'],
-      ];
+      content => template('network/etc/network/interfaces.erb');
   }
   exec { 'network_ifup_all':
     command     => '/sbin/ifup -a --ignore-errors',
     subscribe   => File['/etc/network/interfaces'],
     refreshonly => true,
-    require     => Package['ifupdown', 'resolvconf'],
+    require     => Package[$packages],
   }
 
   service { 'networking':
@@ -68,7 +66,7 @@ class network::linux {
       File['/usr/local/bin/network_status.sh'],
       File['/etc/init.d/networking'],
       File['/etc/network/interfaces'],
-      Package['ifupdown', 'resolvconf'],
+      Package[$packages],
     ],
   }
 }
