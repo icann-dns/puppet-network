@@ -1,5 +1,5 @@
-# @summary struct like object for describing interfaces
-type Network::Interface = Struct[
+# @summary struct like object for describing vlan interfaces
+type Network::VlanInterface = Struct[
   {
     addr4           => Optional[Stdlib::IP::Address::V4::CIDR],
     addr6           => Optional[Stdlib::IP::Address::V6],
@@ -7,7 +7,5 @@ type Network::Interface = Struct[
     gw6             => Optional[Stdlib::IP::Address::V6::Nosubnet],
     nameservers     => Optional[Array[Stdlib::IP::Address::V4::Nosubnet]],
     nameservers6    => Optional[Array[Stdlib::IP::Address::V6::Nosubnet]],
-    bond_interfaces => Optional[Array[String[1],2]],
-    vlans           => Optional[Hash[Integer[1,4096], Network::VlanInterface]],
   }
 ]
