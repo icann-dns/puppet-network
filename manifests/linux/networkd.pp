@@ -24,21 +24,20 @@ class network::linux::networkd {
     enable => mask,
   }
   $_interfaces.each |$iface, $config| {
-    if 'vlans' in $config {
-      $_netdev_config = network::interface_config($iface, $config, '30-static')
-      systemd::networkd::interface { "static-${iface}":
-        interface       => $_netdev_config['interface'],
-        network_profile => $_netdev_config['profile'],
+    network::linux::networkd::static { $iface:
+      config => $config,
+    }
+    if 'bond_interfaces' in $config {
+      network::linux::networkd::bond { $iface:
+        interfaces => $config['bond_interfaces'],
       }
+    }
+    if 'vlans' in $config {
       $config['vlans'].each |$vlan_id, $vlan_config| {
         network::linux::networkd::vlan { "${iface}.${vlan_id}":
           vlan_id => $vlan_id,
           config  => $vlan_config,
         }
-      }
-    } else {
-      network::linux::networkd::static { $iface:
-        config => $config,
       }
     }
   }

@@ -10,7 +10,7 @@ function network::interface_config (
   $_vlans = $config['vlans'] ? {
     Undef   => [],
     # TODO: this can go back to integer once PR is merged
-    default => $config['vlans'].keys().map |$vlan_id| { String($vlan_id) },
+    default => $config['vlans'].keys().map |$vlan_id| { "${iface}.${vlan_id}" },
   }
   # The systemd::networkd::interface will gracefully handle empty values
   $_profile = {
