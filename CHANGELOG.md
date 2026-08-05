@@ -1,3 +1,6 @@
+## 2026-08-05 0.9.0
+* Support systemd-networkd
+
 ## 2026-03-18 0.8.1
 * Don't hardcode bond0 as the master interface
 
