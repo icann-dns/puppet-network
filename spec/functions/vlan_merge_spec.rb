@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe 'network::vlan_merge' do
-
   it { is_expected.to run.with_params({}).and_return({}) }
 
   context 'when only vlan interfaces are given' do
