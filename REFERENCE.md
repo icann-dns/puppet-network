@@ -9,17 +9,29 @@
 * [`network`](#network): Used to configure networking for linux and freebsd hosts
 * [`network::freebsd`](#network--freebsd): Used to configure networking for freebsd hosts
 * [`network::linux`](#network--linux): Used to configure networking for linux hosts
+* [`network::linux::ifupdown`](#network--linux--ifupdown): Used to configure networking for linux hosts using ifupdown`
+* [`network::linux::networkd`](#network--linux--networkd): Used to configure networking for linux hosts
+
+### Defined types
+
+* [`network::linux::networkd::bond`](#network--linux--networkd--bond): Used to configure networking for linux hosts
+* [`network::linux::networkd::dummy`](#network--linux--networkd--dummy): Used to configure networking for linux hosts
+* [`network::linux::networkd::static`](#network--linux--networkd--static): Used to configure networking for linux hosts
+* [`network::linux::networkd::vlan`](#network--linux--networkd--vlan): Used to configure networking for linux hosts
 
 ### Functions
 
 * [`get_addresses`](#get_addresses)
 * [`network::get_addresses`](#network--get_addresses)
+* [`network::interface_config`](#network--interface_config)
+* [`network::vlan_merge`](#network--vlan_merge): We use this to merge configs vlan configs under the parent interface
 
 ### Data types
 
 * [`Network::Dummy4`](#Network--Dummy4): type to represent IPv4 dummy interfaces
 * [`Network::Dummy6`](#Network--Dummy6): type to represent IPv4 dummy interfaces
 * [`Network::Interface`](#Network--Interface): struct like object for describing interfaces
+* [`Network::VlanInterface`](#Network--VlanInterface): struct like object for describing vlan interfaces
 
 ## Classes
 
@@ -149,6 +161,148 @@ Used to configure networking for freebsd hosts
 ### <a name="network--linux"></a>`network::linux`
 
 Used to configure networking for linux hosts
+
+#### Parameters
+
+The following parameters are available in the `network::linux` class:
+
+* [`networkd`](#-network--linux--networkd)
+
+##### <a name="-network--linux--networkd"></a>`networkd`
+
+Data type: `Boolean`
+
+if true then the system will use systemd-networkd to manage interfaces instead of if
+
+Default value: `false`
+
+### <a name="network--linux--ifupdown"></a>`network::linux::ifupdown`
+
+Used to configure networking for linux hosts using ifupdown`
+
+#### Parameters
+
+The following parameters are available in the `network::linux::ifupdown` class:
+
+* [`packages`](#-network--linux--ifupdown--packages)
+
+##### <a name="-network--linux--ifupdown--packages"></a>`packages`
+
+Data type: `Array[String]`
+
+An array of packages to ensure are installed.
+
+Default value: `['ifupdown', 'resolvconf']`
+
+### <a name="network--linux--networkd"></a>`network::linux::networkd`
+
+Used to configure networking for linux hosts
+
+## Defined types
+
+### <a name="network--linux--networkd--bond"></a>`network::linux::networkd::bond`
+
+Used to configure networking for linux hosts
+
+#### Parameters
+
+The following parameters are available in the `network::linux::networkd::bond` defined type:
+
+* [`interfaces`](#-network--linux--networkd--bond--interfaces)
+* [`iface`](#-network--linux--networkd--bond--iface)
+
+##### <a name="-network--linux--networkd--bond--interfaces"></a>`interfaces`
+
+Data type: `Array[String[1]]`
+
+The list of interfaces to include in the bond
+
+##### <a name="-network--linux--networkd--bond--iface"></a>`iface`
+
+Data type: `String`
+
+The name of the interface to configure
+
+Default value: `$name`
+
+### <a name="network--linux--networkd--dummy"></a>`network::linux::networkd::dummy`
+
+Used to configure networking for linux hosts
+
+#### Parameters
+
+The following parameters are available in the `network::linux::networkd::dummy` defined type:
+
+* [`ips`](#-network--linux--networkd--dummy--ips)
+
+##### <a name="-network--linux--networkd--dummy--ips"></a>`ips`
+
+Data type: `Array[Stdlib::IP::Address, 1]`
+
+The list of IP addresses to configure on the dummy interface
+
+Default value: `[]`
+
+### <a name="network--linux--networkd--static"></a>`network::linux::networkd::static`
+
+Used to configure networking for linux hosts
+
+#### Parameters
+
+The following parameters are available in the `network::linux::networkd::static` defined type:
+
+* [`iface`](#-network--linux--networkd--static--iface)
+* [`config`](#-network--linux--networkd--static--config)
+
+##### <a name="-network--linux--networkd--static--iface"></a>`iface`
+
+Data type: `String`
+
+The name of the interface to configure
+
+Default value: `$name`
+
+##### <a name="-network--linux--networkd--static--config"></a>`config`
+
+Data type: `Network::Interface`
+
+The config hash for the interface to configure
+
+Default value: `{}`
+
+### <a name="network--linux--networkd--vlan"></a>`network::linux::networkd::vlan`
+
+Used to configure networking for linux hosts
+
+#### Parameters
+
+The following parameters are available in the `network::linux::networkd::vlan` defined type:
+
+* [`vlan_id`](#-network--linux--networkd--vlan--vlan_id)
+* [`iface`](#-network--linux--networkd--vlan--iface)
+* [`config`](#-network--linux--networkd--vlan--config)
+
+##### <a name="-network--linux--networkd--vlan--vlan_id"></a>`vlan_id`
+
+Data type: `Integer`
+
+The vlan id to configure
+
+##### <a name="-network--linux--networkd--vlan--iface"></a>`iface`
+
+Data type: `String`
+
+The name of the interface to configure
+
+Default value: `$name`
+
+##### <a name="-network--linux--networkd--vlan--config"></a>`config`
+
+Data type: `Network::Interface`
+
+The config hash for the interface to configure
+
+Default value: `{}`
 
 ## Functions
 
@@ -300,6 +454,70 @@ Data type: `Optional[String]`
 
 
 
+### <a name="network--interface_config"></a>`network::interface_config`
+
+Type: Puppet Language
+
+The network::interface_config function.
+
+#### `network::interface_config(String $iface, Network::Interface $config, String $file_prefix = '50-static')`
+
+The network::interface_config function.
+
+Returns: `Hash`
+
+##### `iface`
+
+Data type: `String`
+
+
+
+##### `config`
+
+Data type: `Network::Interface`
+
+
+
+##### `file_prefix`
+
+Data type: `String`
+
+
+
+### <a name="network--vlan_merge"></a>`network::vlan_merge`
+
+Type: Puppet Language
+
+We use this to merge configs vlan configs under the parent interface
+
+#### Examples
+
+##### { eth.10: { addr4 => '192.0.2.1'} } would merge into { eth: { vlans => { 10: { addr4 => '192.0.2.1' } } } }
+
+```puppet
+
+```
+
+#### `network::vlan_merge(Hash[String[1],Network::Interface] $interfaces = {})`
+
+The network::vlan_merge function.
+
+Returns: `Any`
+
+##### Examples
+
+###### { eth.10: { addr4 => '192.0.2.1'} } would merge into { eth: { vlans => { 10: { addr4 => '192.0.2.1' } } } }
+
+```puppet
+
+```
+
+##### `interfaces`
+
+Data type: `Hash[String[1],Network::Interface]`
+
+The interfaces hash from the main network class
+
 ## Data types
 
 ### <a name="Network--Dummy4"></a>`Network::Dummy4`
@@ -328,8 +546,25 @@ Struct[{
     gw6             => Optional[Stdlib::IP::Address::V6::Nosubnet],
     nameservers     => Optional[Array[Stdlib::IP::Address::V4::Nosubnet]],
     nameservers6    => Optional[Array[Stdlib::IP::Address::V6::Nosubnet]],
-    vlan_raw_device => Optional[String[1]],
     bond_interfaces => Optional[Array[String[1],2]],
+    vlans           => Optional[Hash[Integer[1,4096], Network::VlanInterface]],
+  }]
+```
+
+### <a name="Network--VlanInterface"></a>`Network::VlanInterface`
+
+struct like object for describing vlan interfaces
+
+Alias of
+
+```puppet
+Struct[{
+    addr4           => Optional[Stdlib::IP::Address::V4::CIDR],
+    addr6           => Optional[Stdlib::IP::Address::V6],
+    gw4             => Optional[Stdlib::IP::Address::V4::Nosubnet],
+    gw6             => Optional[Stdlib::IP::Address::V6::Nosubnet],
+    nameservers     => Optional[Array[Stdlib::IP::Address::V4::Nosubnet]],
+    nameservers6    => Optional[Array[Stdlib::IP::Address::V6::Nosubnet]],
   }]
 ```
 
