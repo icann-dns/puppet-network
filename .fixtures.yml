@@ -2,9 +2,9 @@
 # See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
 ---
 fixtures:
-  forge_modules:
-     stdlib: "puppetlabs/stdlib"
-     augeasproviders_core: "puppet/augeasproviders_core"
-     augeasproviders_sysctl: "puppet/augeasproviders_sysctl"
-     host_core: "puppetlabs/host_core"
-     motd: "icann/motd"
+  repositories:
+     stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
+     augeasproviders_core: "https://github.com/voxpupuli/puppet-augeasproviders_core.git"
+     augeasproviders_sysctl: "https://github.com/voxpupuli/augeasproviders_sysctl.git"
+     host_core: "https://github.com/puppetlabs/puppetlabs-host_core"
+     motd: "https://github.com/icann-dns/puppet-motd"
