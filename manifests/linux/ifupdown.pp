@@ -10,10 +10,11 @@ class network::linux::ifupdown (
   $dummy6      = $network::dummy6
 
   service { ['systemd-networkd', 'systemd-networkd.socket']:
-    ensure => 'stopped',
-    enable => mask,
+    ensure   => 'stopped',
+    enable   => mask,
+    provider => 'systemd',
   }
-  ensure_packages($packages)
+  stdlib::ensure_packages($packages)
 
   file {
     default:

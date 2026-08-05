@@ -15,8 +15,9 @@ class network::linux (
 
   # We don;t make use of either theses services regarless of the network manager
   service { ['networkd-dispatcher', 'systemd-networkd-wait-online']:
-    ensure => 'stopped',
-    enable => mask,
+    ensure   => 'stopped',
+    enable   => mask,
+    provider => 'systemd',  # required for CI
   }
   file { ['/etc/cloud', '/etc/netplan']:
     ensure  => absent,
