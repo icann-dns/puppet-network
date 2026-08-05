@@ -234,7 +234,6 @@ describe 'network::linux' do
                 },
                 'eth0.42' => {
                   'addr4' => '192.0.2.42/24',
-                  'vlan_raw_device' => 'eth0',
                 }
               },
               sysctl => {
@@ -266,7 +265,6 @@ describe 'network::linux' do
               iface\seth0.42\sinet\sstatic
               \s+address\s192.0.2.42/24
               \s+dns-search\sexample.com
-              \s+vlan-raw-device\seth0
               }x,
             )
           end

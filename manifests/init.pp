@@ -43,7 +43,7 @@
 #   a hash of sysctl types to pass to thias/sysctl
 # @param additional_hosts
 #   a hash of additional `host` type entries to create
-# @param prefer_ipv4 
+# @param prefer_ipv4
 #   if true then the system will prefer IPv4 connections over IPv6
 # @param purge_hosts
 #   if true purge any `host` entries not managed by puppet
