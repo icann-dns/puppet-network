@@ -152,7 +152,7 @@ Data type: `Optional[String]`
 
 the name of the primary interface
 
-Default value: `undef`
+Default value: `$facts['networking']['primary']`
 
 ### <a name="network--freebsd"></a>`network::freebsd`
 
