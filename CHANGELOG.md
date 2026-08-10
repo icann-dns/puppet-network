@@ -1,3 +1,6 @@
+## 2026-08-05 0.9.1
+* Support fail instead of error when primary interface is missing
+
 ## 2026-08-05 0.9.0
 * Support systemd-networkd
 
