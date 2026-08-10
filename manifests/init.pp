@@ -56,23 +56,12 @@ class network (
   Hash[String[1], Network::Dummy6]   $dummy6           = {},
   Hash                               $sysctl           = {},
   Hash                               $additional_hosts = {},
-  Optional[String]                   $primary          = undef,
+  Optional[String]                   $primary          = $facts['networking']['primary'],
 ) {
   $_dummy4 = Hash($dummy4.map |$service, $ip| { ["${service}_v4", Array($ip, true)] })
   $_dummy6 = Hash($dummy6.map |$service, $ip| { ["${service}_v6", Array($ip, true)] })
-  ($_dummy4 + $_dummy6).each |$service, $ips| {
-    motd::message { $service:
-      message  => "${service}: ${ips.join(' ').motd::ansi::attr('bold')}",
-      priority => 60,
-    }
-  }
-  resources { 'host':
-    purge => $purge_hosts,
-  }
-  $_primary = $primary ? {
-    undef   => $facts['networking']['primary'],
-    default => $primary,
-  }
+  $addr4 = $interfaces.dig($primary, 'addr4')
+  $addr6 = $interfaces.dig($primary, 'addr6')
   $host_entries = {
     'localhost'       => { 'ip' => '127.0.0.1', 'host_aliases' => [] },
     'ip6-localhost'   => {
@@ -83,25 +72,37 @@ class network (
     'ip6-mcastprefix' => { 'ip' => 'ff00::0' },
     'ip6-allnodes'    => { 'ip' => 'ff02::1' },
     'ip6-allrouters'  => { 'ip' => 'ff02::2' },
-  }
-  create_resources(host, $host_entries)
-  if $additional_hosts {
-    create_resources(host, $additional_hosts)
-  }
-  # only update hosts if we have a primary interface
-  if $_primary {
-    $primary_interface = $interfaces[$_primary]
-    if $primary_interface['addr4'] {
-      host { $facts['networking']['fqdn']:
-        ip           => $primary_interface['addr4'].split('/')[0],
-        host_aliases => [$facts['networking']['hostname']],
-      }
+  } + $additional_hosts
+  ($_dummy4 + $_dummy6).each |$service, $ips| {
+    motd::message { $service:
+      message  => "${service}: ${ips.join(' ').motd::ansi::attr('bold')}",
+      priority => 60,
     }
-    if $primary_interface['addr6'] {
-      host { $facts['networking']['hostname']:
-        ip           => $primary_interface['addr6'].split('/')[0],
-        host_aliases => [$facts['networking']['fqdn']],
-      }
+  }
+  resources { 'host':
+    purge => $purge_hosts,
+  }
+  $host_entries.each |$host, $entry| {
+    host { $host:
+      * => $entry,
+    }
+  }
+  if $addr4 {
+    host { $facts['networking']['fqdn']:
+      ip           => $addr4.split('/')[0],
+      host_aliases => [$facts['networking']['hostname']],
+    }
+  }
+  if $addr6 {
+    host { $facts['networking']['hostname']:
+      ip           => $addr6.split('/')[0],
+      host_aliases => [$facts['networking']['fqdn']],
+    }
+  }
+  unless $primary in $interfaces.keys {
+    warning("primary interface ${primary} not found in interfaces hash")
+    notify { "primary interface ${primary} not found in interfaces hash":
+      message => "primary interface ${primary} not found in interfaces hash",
     }
   }
   case $facts['kernel'] {
