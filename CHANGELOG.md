@@ -1,3 +1,6 @@
+## 2026-08-05 0.9.2
+* Improve ordering for switching between providers
+
 ## 2026-08-05 0.9.1
 * Support fail instead of error when primary interface is missing
 
