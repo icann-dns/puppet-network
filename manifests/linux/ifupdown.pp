@@ -9,11 +9,6 @@ class network::linux::ifupdown (
   $dummy4      = $network::dummy4
   $dummy6      = $network::dummy6
 
-  service { ['systemd-networkd', 'systemd-networkd.socket']:
-    ensure   => 'stopped',
-    enable   => mask,
-    provider => 'systemd',
-  }
   stdlib::ensure_packages($packages)
 
   file {
@@ -57,5 +52,11 @@ class network::linux::ifupdown (
       File['/etc/network/interfaces'],
       Package[$packages],
     ],
+  }
+  service { ['systemd-networkd', 'systemd-networkd.socket']:
+    ensure   => 'stopped',
+    enable   => 'mask',
+    provider => 'systemd',
+    require  => Service['networking'],
   }
 }
