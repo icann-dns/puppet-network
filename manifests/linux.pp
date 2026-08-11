@@ -16,14 +16,16 @@ class network::linux (
   # We don;t make use of either theses services regarless of the network manager
   service { ['networkd-dispatcher', 'systemd-networkd-wait-online']:
     ensure   => 'stopped',
-    enable   => mask,
+    enable   => 'mask',
     provider => 'systemd',  # required for CI
+    before   => File['/etc/cloud', '/etc/netplan'],
   }
   file { ['/etc/cloud', '/etc/netplan']:
     ensure  => absent,
     recurse => true,
     force   => true,
-    before  => Class[$network_class],
+    require => Class[$network_class],
+
   }
   package { ['cloud-init', 'netplan-generator']:
     ensure => 'purged',
