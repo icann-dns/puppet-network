@@ -1,3 +1,6 @@
+## 2026-08-14 0.9.3
+* Manage dependencies and loading kernal modules
+
 ## 2026-08-05 0.9.2
 * Improve ordering for switching between providers
 
