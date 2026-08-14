@@ -37,6 +37,8 @@
 #   a hash of interfaces to create
 # @param dummy4
 #   a hash of ipv4 dummy interfaces to create
+# @param before_services
+#   an array of services to ensure are started after the network is configured
 # @param dummy6
 #   a hash of ipv6 dummy interfaces to create
 # @param sysctl
@@ -51,6 +53,7 @@
 class network (
   Boolean                            $prefer_ipv4      = true,
   Boolean                            $purge_hosts      = true,
+  Array[String[1]]                   $before_services  = [],
   Hash[String[1],Network::Interface] $interfaces       = {},
   Hash[String[1], Network::Dummy4]   $dummy4           = {},
   Hash[String[1], Network::Dummy6]   $dummy6           = {},
