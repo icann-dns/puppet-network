@@ -9,9 +9,29 @@ class network::linux (
 
   include network
 
-  $sysctl      = $network::sysctl
+  $sysctl = $network::sysctl
   $prefer_ipv4 = $network::prefer_ipv4
   $network_class = $networkd.bool2str('network::linux::networkd', 'network::linux::ifupdown')
+  $before_services = $network::before_services
+
+  if $networkd and $before_services {
+    Service['systemd-networkd'] -> Service[$before_services]
+  } else {
+    # We need to override the systemd file to ensure a dummy interface is created when the module os loaded.
+    file { '/etc/modprobe.d/systemd.conf':
+      ensure  => file,
+      mode    => '0644',
+      content => "options bonding max_bonds=0\n",
+      before  => Kmod::Load['dummy'],
+    }
+    kmod::load { 'dummy':
+      before => Service['networking'],
+    }
+    kmod::load { '8021q':
+      before => Service['networking'],
+    }
+    Service['networking'] -> Service[$before_services]
+  }
 
   # We don;t make use of either theses services regarless of the network manager
   service { ['networkd-dispatcher', 'systemd-networkd-wait-online']:
