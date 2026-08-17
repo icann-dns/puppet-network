@@ -18,19 +18,23 @@ class network::linux (
     Service['systemd-networkd'] -> Service[$before_services]
   } else {
     # We need to override the systemd file to ensure a dummy interface is created when the module os loaded.
-    file { '/etc/modprobe.d/systemd.conf':
-      ensure  => file,
-      mode    => '0644',
-      content => "options bonding max_bonds=0\n",
-      before  => Kmod::Load['dummy'],
-    }
-    kmod::load { 'dummy':
-      before => Service['networking'],
+    unless $network::dummy4.empty() and $network::dummy6.empty() {
+      file { '/etc/modprobe.d/systemd.conf':
+        ensure  => file,
+        mode    => '0644',
+        content => "options bonding max_bonds=0\n",
+        before  => Kmod::Load['dummy'],
+      }
+      kmod::load { 'dummy':
+        before => Service['networking'],
+      }
     }
     kmod::load { '8021q':
       before => Service['networking'],
     }
-    Service['networking'] -> Service[$before_services]
+    if $before_services {
+      Service['networking'] -> Service[$before_services]
+    }
   }
 
   # We don;t make use of either theses services regarless of the network manager
