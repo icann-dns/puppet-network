@@ -1,3 +1,6 @@
+## 2026-08-14 0.9.4
+* Only load dummy interface if there are dummies
+
 ## 2026-08-14 0.9.3
 * Manage dependencies and loading kernal modules
 

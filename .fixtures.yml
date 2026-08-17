@@ -8,3 +8,4 @@ fixtures:
      augeasproviders_sysctl: "https://github.com/voxpupuli/augeasproviders_sysctl.git"
      host_core: "https://github.com/puppetlabs/puppetlabs-host_core"
      motd: "https://github.com/icann-dns/puppet-motd"
+     kmod: "https://github.com/icann-dns/puppet-kmod"
