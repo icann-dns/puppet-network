@@ -1,0 +1,11 @@
+---
+network::interfaces:
+  eth0:
+    addr4: '192.0.2.2/24'
+    addr6: '2001:db8::2/64'
+network::dummy4:
+  dummy0:
+    - '198.51.100.2/24'
+    - '198.51.100.3/24'
+network::dummy6:
+  dummy0: '2001:db8:1::2/64'
