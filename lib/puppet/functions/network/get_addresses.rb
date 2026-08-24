@@ -46,8 +46,8 @@ Puppet::Functions.create_function(:'network::get_addresses') do
     interfaces             = call_function('lookup', 'network::interfaces', { 'default_value' => {} })
 
     if send_primary
-      addresses << interfaces[ipv4_primary_interface]['addr4'].split('/')[0] if !ipv4_primary_interface.nil? && ipv4_capable && send_ipv4 && !interfaces.dig(ipv4_primary_interface, 'addr4').nil?
-      addresses << interfaces[ipv6_primary_interface]['addr6'].split('/')[0] if !ipv6_primary_interface.nil? && ipv6_capable && send_ipv6 && !interfaces.dig(ipv6_primary_interface, 'addr6').nil?
+      addresses << [interfaces[ipv4_primary_interface]['addr4']].flatten[0].split('/')[0] if !ipv4_primary_interface.nil? && ipv4_capable && send_ipv4 && !interfaces.dig(ipv4_primary_interface, 'addr4').nil?
+      addresses << [interfaces[ipv6_primary_interface]['addr6']].flatten[0].split('/')[0] if !ipv6_primary_interface.nil? && ipv6_capable && send_ipv6 && !interfaces.dig(ipv6_primary_interface, 'addr6').nil?
     end
     addresses << parse_dummy(dummy_name, dummy4) if ipv4_capable && send_ipv4
     addresses << parse_dummy(dummy_name, dummy6) if ipv6_capable && send_ipv6

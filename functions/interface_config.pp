@@ -5,7 +5,7 @@ function network::interface_config (
 ) >> Hash {
   $file_name = "${file_prefix}-${iface}"
   $_gatewey = [$config['gw4'], $config['gw6']].filter |$v| { $v =~ NotUndef }
-  $_addresses = [$config['addr4'], $config['addr6']].filter |$v| { $v =~ NotUndef }
+  $_addresses = (Array($config['addr4'], true) + Array($config['addr6'], true)).filter |$v| { $v =~ NotUndef }
   $_nameservers = [$config['nameservers'], $config['nameservers6']].flatten.filter |$v| { $v =~ NotUndef }
   $_vlans = $config['vlans'] ? {
     Undef   => [],

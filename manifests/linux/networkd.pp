@@ -1,7 +1,5 @@
 # @summary Used to configure networking for linux hosts
 class network::linux::networkd {
-  assert_private()
-
   $dummy4      = $network::dummy4
   $dummy6      = $network::dummy6
 
@@ -20,8 +18,9 @@ class network::linux::networkd {
     ensure => absent,
   }
   service { 'networking':
-    ensure => 'stopped',
-    enable => mask,
+    ensure   => 'stopped',
+    provider => 'systemd',
+    enable   => mask,
   }
   $_interfaces.each |$iface, $config| {
     network::linux::networkd::static { $iface:

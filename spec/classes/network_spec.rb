@@ -106,55 +106,36 @@ describe 'network' do
           it { is_expected.to compile }
           it { is_expected.not_to contain_resources('host').with_purge(true) }
         end
-      end
 
-      describe 'check bad type' do
-        context 'interfaces' do
-          before { params.merge!(interfaces: true) }
+        context 'multiple addresses' do
+          let(:params) do
+            super().merge(
+              interfaces: {
+                'eth0' => {
+                  'addr4' => ['192.0.2.1/24', '192.0.2.2/24'],
+                  'gw4' => '192.0.2.254',
+                  'addr6' => ['2001:db8::1/64', '2001:db8::2/64'],
+                  'gw6' => '2001:db8::ff',
+                },
+              },
+            )
+          end
 
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
+          it { is_expected.to compile }
 
-        context 'dummy4' do
-          before { params.merge!(dummy4: true) }
+          it do
+            is_expected.to contain_host('network').with(
+              ip: '2001:db8::1',
+              host_aliases: ['network.example.com'],
+            )
+          end
 
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-
-        context 'dummy6' do
-          before { params.merge!(dummy6: true) }
-
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-
-        context 'sysctl' do
-          before { params.merge!(sysctl: true) }
-
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-
-        context 'additional_hosts' do
-          before { params.merge!(additional_hosts: true) }
-
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-
-        context 'primary' do
-          before { params.merge!(primary: true) }
-
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-
-        context 'prefer_ipv4' do
-          before { params.merge!(prefer_ipv4: 'foobar') }
-
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-
-        context 'purge_hosts' do
-          before { params.merge!(purge_hosts: 'foobar') }
-
-          it { is_expected.to raise_error(Puppet::Error) }
+          it do
+            is_expected.to contain_host('network.example.com').with(
+              ip: '192.0.2.1',
+              host_aliases: ['network'],
+            )
+          end
         end
       end
     end

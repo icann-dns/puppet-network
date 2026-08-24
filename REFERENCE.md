@@ -83,9 +83,11 @@ The following parameters are available in the `network` class:
 
 * [`interfaces`](#-network--interfaces)
 * [`dummy4`](#-network--dummy4)
+* [`before_services`](#-network--before_services)
 * [`dummy6`](#-network--dummy6)
 * [`sysctl`](#-network--sysctl)
 * [`additional_hosts`](#-network--additional_hosts)
+* [`networkd`](#-network--networkd)
 * [`prefer_ipv4`](#-network--prefer_ipv4)
 * [`purge_hosts`](#-network--purge_hosts)
 * [`primary`](#-network--primary)
@@ -105,6 +107,14 @@ Data type: `Hash[String[1], Network::Dummy4]`
 a hash of ipv4 dummy interfaces to create
 
 Default value: `{}`
+
+##### <a name="-network--before_services"></a>`before_services`
+
+Data type: `Array[String[1]]`
+
+an array of services to ensure are started after the network is configured
+
+Default value: `[]`
 
 ##### <a name="-network--dummy6"></a>`dummy6`
 
@@ -129,6 +139,14 @@ Data type: `Hash`
 a hash of additional `host` type entries to create
 
 Default value: `{}`
+
+##### <a name="-network--networkd"></a>`networkd`
+
+Data type: `Boolean`
+
+if true then the system will use systemd-networkd to manage interfaces instead of ifupdown
+
+Default value: `false`
 
 ##### <a name="-network--prefer_ipv4"></a>`prefer_ipv4`
 
@@ -174,7 +192,7 @@ Data type: `Boolean`
 
 if true then the system will use systemd-networkd to manage interfaces instead of if
 
-Default value: `false`
+Default value: `$network::networkd`
 
 ### <a name="network--linux--ifupdown"></a>`network::linux::ifupdown`
 
@@ -540,8 +558,8 @@ Alias of
 
 ```puppet
 Struct[{
-    addr4           => Optional[Stdlib::IP::Address::V4::CIDR],
-    addr6           => Optional[Stdlib::IP::Address::V6],
+    addr4           => Optional[Variant[Stdlib::IP::Address::V4::CIDR, Array[Stdlib::IP::Address::V4::CIDR]]],
+    addr6           => Optional[Variant[Stdlib::IP::Address::V6::CIDR, Array[Stdlib::IP::Address::V6::CIDR]]],
     gw4             => Optional[Stdlib::IP::Address::V4::Nosubnet],
     gw6             => Optional[Stdlib::IP::Address::V6::Nosubnet],
     nameservers     => Optional[Array[Stdlib::IP::Address::V4::Nosubnet]],
@@ -559,8 +577,8 @@ Alias of
 
 ```puppet
 Struct[{
-    addr4           => Optional[Stdlib::IP::Address::V4::CIDR],
-    addr6           => Optional[Stdlib::IP::Address::V6],
+    addr4           => Optional[Variant[Stdlib::IP::Address::V4::CIDR, Array[Stdlib::IP::Address::V4::CIDR]]],
+    addr6           => Optional[Variant[Stdlib::IP::Address::V6::CIDR, Array[Stdlib::IP::Address::V6::CIDR]]],
     gw4             => Optional[Stdlib::IP::Address::V4::Nosubnet],
     gw6             => Optional[Stdlib::IP::Address::V6::Nosubnet],
     nameservers     => Optional[Array[Stdlib::IP::Address::V4::Nosubnet]],
