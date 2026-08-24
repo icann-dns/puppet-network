@@ -1,6 +1,6 @@
 #!/bin/sh
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
-<%- 
+<%-
 @ping = 'ping -q -W 1 -c 1'
 @ping6 = 'ping6 -q -W 1 -c 1'
 @loopback = '-I lo'
@@ -13,24 +13,28 @@ end %>
 <%- @interfaces.each_pair do |int, config| -%>
   <%- if config.fetch('addr4', false) -%>
 #Test <%= int %> IPv4
-<%= @ping %> -I 127.0.0.1 <%= config['addr4'].split('/')[0] %> 1>/dev/null 2>&1 || exit 1
-    <%- if config.fetch('gw4', false) -%>
-#<%= @ping %> <%= config['addr4'].split('/')[0] %> <%= config['gw4'] %> 1>/dev/null 2>&1 || exit 1
+    <%- [config['addr4']].flatten.each do |addr| -%>
+<%= @ping %> -I 127.0.0.1 <%= addr.split('/')[0] %> 1>/dev/null 2>&1 || exit 1
+      <%- if config.fetch('gw4', false) -%>
+#<%= @ping %> <%= addr.split('/')[0] %> <%= config['gw4'] %> 1>/dev/null 2>&1 || exit 1
+      <%- end -%>
     <%- end -%>
   <%- end -%>
   <%- if config.fetch('addr6', false) -%>
     <%- @ipv6 = true -%>
+    <%- [config['addr6']].flatten.each do |addr| -%>
 #Test <%= int %> IPv6
-#<%= @ping6 %> <%= @loopback %> <%= config['addr6'].split('/')[0] %> 1>/dev/null 2>&1 || exit 1
-<%= @ping6 %> <%= config['addr6'].split('/')[0] %> 1>/dev/null 2>&1 || exit 1
-    <%- if config.fetch('gw6', false) -%>
+#<%= @ping6 %> <%= @loopback %> <%= addr.split('/')[0] %> 1>/dev/null 2>&1 || exit 1
+<%= @ping6 %> <%= addr.split('/')[0] %> 1>/dev/null 2>&1 || exit 1
+      <%- if config.fetch('gw6', false) -%>
 #<%= @ping6 %> <%= int %> <%= config['gw6'] %> 1>/dev/null 2>&1 || exit 1
+      <%- end -%>
     <%- end -%>
   <%- end -%>
 <%- end -%>
 <%- @dummy4.each_pair do |int, config| -%>
 #Test <%= int %> IPv4
-  <%- if config.class == String 
+  <%- if config.class == String
     config = [config]
   end
   config.each do |addr| -%>
@@ -40,7 +44,7 @@ end %>
 <%- if @ipv6 -%>
   <%- @dummy6.each_pair do |int, config| -%>
 #Test <%= int %> IPv6
-    <%- if config.class == String 
+    <%- if config.class == String
     config = [config]
   end
   config.each do |addr| -%>

@@ -26,7 +26,7 @@ define network::linux::networkd::vlan (
   }
 
   # Create the interface config
-  $_vlan_config = network::interface_config($iface, $config, "50-vlan-${iface}")
+  $_vlan_config = network::interface_config($iface, $config, '50-vlan')
   systemd::networkd::interface { "vlan-${iface}":
     interface       => $_vlan_config['interface'],
     network_profile => $_vlan_config['profile'],

@@ -1,7 +1,7 @@
 # @summary Used to configure networking for linux hosts
 # @param networkd if true then the system will use systemd-networkd to manage interfaces instead of if
 class network::linux (
-  Boolean $networkd = false,
+  Boolean $networkd = $network::networkd,
 ) {
   assert_private()
 
@@ -49,7 +49,6 @@ class network::linux (
     recurse => true,
     force   => true,
     require => Class[$network_class],
-
   }
   package { ['cloud-init', 'netplan-generator']:
     ensure => 'purged',

@@ -45,6 +45,7 @@
 #   a hash of sysctl types to pass to thias/sysctl
 # @param additional_hosts
 #   a hash of additional `host` type entries to create
+# @param networkd if true then the system will use systemd-networkd to manage interfaces instead of ifupdown
 # @param prefer_ipv4
 #   if true then the system will prefer IPv4 connections over IPv6
 # @param purge_hosts
@@ -53,6 +54,7 @@
 class network (
   Boolean                            $prefer_ipv4      = true,
   Boolean                            $purge_hosts      = true,
+  Boolean                            $networkd         = false,
   Array[String[1]]                   $before_services  = [],
   Hash[String[1],Network::Interface] $interfaces       = {},
   Hash[String[1], Network::Dummy4]   $dummy4           = {},
@@ -63,8 +65,8 @@ class network (
 ) {
   $_dummy4 = Hash($dummy4.map |$service, $ip| { ["${service}_v4", Array($ip, true)] })
   $_dummy6 = Hash($dummy6.map |$service, $ip| { ["${service}_v6", Array($ip, true)] })
-  $addr4 = $interfaces.dig($primary, 'addr4')
-  $addr6 = $interfaces.dig($primary, 'addr6')
+  $addr4 = Array($interfaces.dig($primary, 'addr4'), true).filter |$x| { $x != undef }
+  $addr6 = Array($interfaces.dig($primary, 'addr6'), true).filter |$x| { $x != undef }
   $host_entries = {
     'localhost'       => { 'ip' => '127.0.0.1', 'host_aliases' => [] },
     'ip6-localhost'   => {
@@ -90,15 +92,15 @@ class network (
       * => $entry,
     }
   }
-  if $addr4 {
+  unless $addr4.empty {
     host { $facts['networking']['fqdn']:
-      ip           => $addr4.split('/')[0],
+      ip           => $addr4[0].split('/')[0],
       host_aliases => [$facts['networking']['hostname']],
     }
   }
-  if $addr6 {
+  unless $addr6.empty {
     host { $facts['networking']['hostname']:
-      ip           => $addr6.split('/')[0],
+      ip           => $addr6[0].split('/')[0],
       host_aliases => [$facts['networking']['fqdn']],
     }
   }
