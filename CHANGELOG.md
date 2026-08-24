@@ -1,3 +1,6 @@
+## 2026-08-24 0.9.5
+* Add support for multiple IP addresses to systemd-networkd
+
 ## 2026-08-14 0.9.4
 * Only load dummy interface if there are dummies
 
