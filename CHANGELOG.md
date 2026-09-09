@@ -1,3 +1,6 @@
+## 2026-09-09
+* Reject RA's in systemd-networkd
+
 ## 2026-08-24 0.9.5
 * Add support for multiple IP addresses to systemd-networkd
 
