@@ -12,7 +12,8 @@ define network::linux::networkd::dummy (
           'Name' => 'lo',
         },
         'Network' => {
-          'Address' => $ips,
+          'Address'      => $ips,
+          'IPv6AcceptRA' => 'no',
         },
       },
     },

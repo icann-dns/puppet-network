@@ -99,6 +99,7 @@ describe 'network::linux' do
                     'Address' => ['192.0.2.2/24', '2001:db8::2/64'],
                     'DNS' => ['8.8.8.8', '2001:4860:4860::8888'],
                     'VLAN' => [],
+                    'IPv6AcceptRA' => 'no',
                   },
                 },
               },
@@ -134,7 +135,10 @@ describe 'network::linux' do
                 'filename' => '30-netdev-eth0',
                 'network' => {
                   'Match' => { 'Name' => 'eth0' },
-                  'Network' => { 'Bond' => 'bond0' },
+                  'Network' => {
+                    'Bond' => 'bond0',
+                    'IPv6AcceptRA' => 'no',
+                  },
                 },
               },
             )
@@ -163,6 +167,7 @@ describe 'network::linux' do
                     'Address' => ['10.0.0.2/24', '2001:db8:1::2/64'],
                     'DNS' => [],
                     'VLAN' => [],
+                    'IPv6AcceptRA' => 'no',
                   },
                 },
               },
@@ -185,6 +190,7 @@ describe 'network::linux' do
                       '192.0.2.53/32', '192.0.2.80/32', '192.0.2.43/32',
                       '2001:db8::53/128', '2001:db8::80/128', '2001:db8::443/128',
                     ],
+                    'IPv6AcceptRA' => 'no',
                   },
                 },
               },
@@ -202,6 +208,7 @@ describe 'network::linux' do
                     'DNS' => [],
                     # TODO: need to make sure this is correct, but it seems like the VLAN should be on the eth2.100 interface, not eth2
                     'VLAN' => ['eth2.100'],
+                    'IPv6AcceptRA' => 'no',
                   },
                 },
               },
