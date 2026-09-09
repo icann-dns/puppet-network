@@ -25,9 +25,10 @@ function network::interface_config (
         'Name' => $iface,
       },
       'Network' => {
-        'Address' => $_addresses,
-        'DNS'     => $_nameservers,
-        'VLAN'    => $_vlans,
+        'Address'      => $_addresses,
+        'DNS'          => $_nameservers,
+        'VLAN'         => $_vlans,
+        'IPv6AcceptRA' => 'no',
       },
     },
   }

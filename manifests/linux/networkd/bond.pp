@@ -33,6 +33,7 @@ define network::linux::networkd::bond (
         },
         'Network' => {
           'Bond' => $iface,
+          'IPv6AcceptRA' => 'no',
         },
       },
     }
